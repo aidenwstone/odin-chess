@@ -9,4 +9,8 @@ class Pawn < Piece
     super
     @first_move = true
   end
+
+  def first_move?
+    @first_move
+  end
 end
