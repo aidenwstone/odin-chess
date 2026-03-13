@@ -11,6 +11,10 @@ class Pawn < Piece
     @direction = white? ? 1 : -1
   end
 
+  def to_s
+    white? ? "\u2659" : "\u265F"
+  end
+
   def first_move?
     @first_move
   end
