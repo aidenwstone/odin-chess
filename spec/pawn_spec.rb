@@ -11,4 +11,32 @@ describe Pawn do
       expect(pawn.first_move?).to be(false)
     end
   end
+
+  describe '#moves' do
+    context 'when the pawn is white' do
+      subject(:white_pawn) { described_class.new(true) }
+
+      it 'returns the forward and double-step movement vectors on the first move' do
+        expect(white_pawn.moves).to contain_exactly([1, 0], [2, 0])
+      end
+
+      it 'returns only the single-step forward movement vector on subsequent moves' do
+        white_pawn.disable_double_step
+        expect(white_pawn.moves).to contain_exactly([1, 0])
+      end
+    end
+
+    context 'when the pawn is black' do
+      subject(:black_pawn) { described_class.new(false) }
+
+      it 'returns the forward and double-step movement vectors on the first move' do
+        expect(black_pawn.moves).to contain_exactly([-1, 0], [-2, 0])
+      end
+
+      it 'returns only the single-step forward movement vector on subsequent moves' do
+        black_pawn.disable_double_step
+        expect(black_pawn.moves).to contain_exactly([-1, 0])
+      end
+    end
+  end
 end

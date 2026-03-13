@@ -8,6 +8,7 @@ class Pawn < Piece
   def initialize(is_white)
     super
     @first_move = true
+    @direction = white? ? 1 : -1
   end
 
   def first_move?
@@ -16,5 +17,13 @@ class Pawn < Piece
 
   def disable_double_step
     @first_move = false
+  end
+
+  def moves
+    if first_move?
+      [[@direction, 0], [@direction * 2, 0]]
+    else
+      [[@direction, 0]]
+    end
   end
 end
