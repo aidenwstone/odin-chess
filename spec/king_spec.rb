@@ -20,4 +20,12 @@ describe King do
       end
     end
   end
+
+  describe '#moves' do
+    subject(:king) { described_class.new(true) }
+
+    it 'returns the movement vectors adjacent to the king' do
+      expect(king.moves).to contain_exactly([1, -1], [1, 0], [1, 1], [0, -1], [0, 1], [-1, -1], [-1, 0], [-1, 1])
+    end
+  end
 end
