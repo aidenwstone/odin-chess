@@ -39,4 +39,22 @@ describe Pawn do
       end
     end
   end
+
+  describe '#attacks' do
+    context 'when the pawn is white' do
+      subject(:white_pawn) { described_class.new(true) }
+
+      it 'returns the diagonally adjacent forward attack vectors' do
+        expect(white_pawn.attacks).to contain_exactly([1, 1], [1, -1])
+      end
+    end
+
+    context 'when the pawn is black' do
+      subject(:black_pawn) { described_class.new(false) }
+
+      it 'returns the diagonally adjacent forward attack vectors' do
+        expect(black_pawn.attacks).to contain_exactly([-1, 1], [-1, -1])
+      end
+    end
+  end
 end

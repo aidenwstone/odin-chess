@@ -26,4 +26,8 @@ class Pawn < Piece
       [[@direction, 0]]
     end
   end
+
+  def attacks
+    [[@direction, 1], [@direction, -1]]
+  end
 end
