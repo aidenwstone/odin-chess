@@ -13,4 +13,8 @@ class Pawn < Piece
   def first_move?
     @first_move
   end
+
+  def disable_double_step
+    @first_move = false
+  end
 end
