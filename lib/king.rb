@@ -14,4 +14,8 @@ class King < Piece
   def moves
     POSSIBLE_MOVES
   end
+
+  def attacks
+    POSSIBLE_MOVES
+  end
 end
