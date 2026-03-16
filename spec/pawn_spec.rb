@@ -7,7 +7,7 @@ describe Pawn do
     context 'when the pawn is white' do
       subject(:white_pawn) { described_class.new(true) }
 
-      it 'returns the white pawn unicode symbol' do
+      it "returns the white pawn unicode symbol (\u2659)" do
         expect(white_pawn.to_s).to be("\u2659")
       end
     end
@@ -15,7 +15,7 @@ describe Pawn do
     context 'when the pawn is black' do
       subject(:black_pawn) { described_class.new(false) }
 
-      it 'returns the black pawn unicode symbol' do
+      it "returns the black pawn unicode symbol (\u265F)" do
         expect(black_pawn.to_s).to be("\u265F")
       end
     end

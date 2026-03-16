@@ -9,7 +9,7 @@ describe King do
     context 'when the king is white' do
       subject(:white_king) { described_class.new(true) }
 
-      it 'returns the white king unicode symbol' do
+      it "returns the white king unicode symbol (\u2654)" do
         expect(white_king.to_s).to be("\u2654")
       end
     end
@@ -17,7 +17,7 @@ describe King do
     context 'when the king is black' do
       subject(:black_king) { described_class.new(false) }
 
-      it 'returns the black king unicode symbol' do
+      it "returns the black king unicode symbol (\u265A)" do
         expect(black_king.to_s).to be("\u265A")
       end
     end
