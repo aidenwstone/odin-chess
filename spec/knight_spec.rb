@@ -30,4 +30,12 @@ describe Knight do
       expect(knight.moves).to match_array(movement_vectors)
     end
   end
+
+  describe '#attacks' do
+    subject(:knight) { described_class.new(true) }
+
+    it 'returns the L-shaped attack vectors' do
+      expect(knight.attacks).to match_array(movement_vectors)
+    end
+  end
 end
