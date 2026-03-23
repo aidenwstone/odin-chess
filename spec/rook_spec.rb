@@ -35,4 +35,12 @@ describe Rook do
       expect(rook.moves).to match_array(movement_vectors)
     end
   end
+
+  describe '#attacks' do
+    subject(:rook) { described_class.new(true) }
+
+    it 'returns the orthogonal attack vectors' do
+      expect(rook.attacks).to match_array(movement_vectors)
+    end
+  end
 end
