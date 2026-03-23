@@ -35,4 +35,12 @@ describe Bishop do
       expect(bishop.moves).to match_array(movement_vectors)
     end
   end
+
+  describe '#attacks' do
+    subject(:bishop) { described_class.new(true) }
+
+    it 'returns the diagonal attack vectors' do
+      expect(bishop.attacks).to match_array(movement_vectors)
+    end
+  end
 end

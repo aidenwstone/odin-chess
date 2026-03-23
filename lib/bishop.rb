@@ -18,4 +18,8 @@ class Bishop < Piece
   def moves
     AVAILABLE_MOVES
   end
+
+  def attacks
+    AVAILABLE_MOVES
+  end
 end
