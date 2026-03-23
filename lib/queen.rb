@@ -8,4 +8,8 @@ class Queen < Piece
   def to_s
     white? ? "\u2655" : "\u265B"
   end
+
+  def moves
+    ORTHOGONAL_MOVES + DIAGONAL_MOVES
+  end
 end
