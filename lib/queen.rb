@@ -12,4 +12,8 @@ class Queen < Piece
   def moves
     ORTHOGONAL_MOVES + DIAGONAL_MOVES
   end
+
+  def attacks
+    ORTHOGONAL_MOVES + DIAGONAL_MOVES
+  end
 end

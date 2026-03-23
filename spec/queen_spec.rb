@@ -39,4 +39,12 @@ describe Queen do
       expect(queen.moves).to match_array(movement_vectors)
     end
   end
+
+  describe '#attacks' do
+    subject(:queen) { described_class.new(true) }
+
+    it 'returns the orthogonal and diagonal attack vectors' do
+      expect(queen.attacks).to match_array(movement_vectors)
+    end
+  end
 end
