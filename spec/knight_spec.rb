@@ -7,7 +7,7 @@ describe Knight do
 
   describe '#to_s' do
     context 'when the knight is white' do
-      subject(:white_knight) { described_class.new(true) }
+      subject(:white_knight) { described_class.new(:white) }
 
       it "returns the white knight unicode symbol (\u2658)" do
         expect(white_knight.to_s).to eq("\u2658")
@@ -15,7 +15,7 @@ describe Knight do
     end
 
     context 'when the knight is black' do
-      subject(:black_knight) { described_class.new(false) }
+      subject(:black_knight) { described_class.new(:black) }
 
       it "returns the black knight unicode symbol (\u265E)" do
         expect(black_knight.to_s).to eq("\u265E")
@@ -24,7 +24,7 @@ describe Knight do
   end
 
   describe '#moves' do
-    subject(:knight) { described_class.new(true) }
+    subject(:knight) { described_class.new(:white) }
 
     it 'returns the L-shaped movement vectors' do
       expect(knight.moves).to match_array(movement_vectors)
@@ -32,7 +32,7 @@ describe Knight do
   end
 
   describe '#attacks' do
-    subject(:knight) { described_class.new(true) }
+    subject(:knight) { described_class.new(:white) }
 
     it 'returns the L-shaped attack vectors' do
       expect(knight.attacks).to match_array(movement_vectors)

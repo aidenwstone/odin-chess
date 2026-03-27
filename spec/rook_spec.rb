@@ -12,7 +12,7 @@ describe Rook do
 
   describe '#to_s' do
     context 'when the rook is white' do
-      subject(:white_rook) { described_class.new(true) }
+      subject(:white_rook) { described_class.new(:white) }
 
       it "returns the white rook unicode symbol (\u2656)" do
         expect(white_rook.to_s).to eq("\u2656")
@@ -20,7 +20,7 @@ describe Rook do
     end
 
     context 'when the rook is black' do
-      subject(:black_rook) { described_class.new(false) }
+      subject(:black_rook) { described_class.new(:black) }
 
       it "returns the black rook unicode symbol (\u265C)" do
         expect(black_rook.to_s).to eq("\u265C")
@@ -29,7 +29,7 @@ describe Rook do
   end
 
   describe '#moves' do
-    subject(:rook) { described_class.new(true) }
+    subject(:rook) { described_class.new(:white) }
 
     it 'returns the orthogonal movement vectors' do
       expect(rook.moves).to match_array(movement_vectors)
@@ -37,7 +37,7 @@ describe Rook do
   end
 
   describe '#attacks' do
-    subject(:rook) { described_class.new(true) }
+    subject(:rook) { described_class.new(:white) }
 
     it 'returns the orthogonal attack vectors' do
       expect(rook.attacks).to match_array(movement_vectors)

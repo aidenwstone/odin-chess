@@ -5,7 +5,7 @@ require './lib/pawn'
 describe Pawn do
   describe '#to_s' do
     context 'when the pawn is white' do
-      subject(:white_pawn) { described_class.new(true) }
+      subject(:white_pawn) { described_class.new(:white) }
 
       it "returns the white pawn unicode symbol (\u2659)" do
         expect(white_pawn.to_s).to eq("\u2659")
@@ -13,7 +13,7 @@ describe Pawn do
     end
 
     context 'when the pawn is black' do
-      subject(:black_pawn) { described_class.new(false) }
+      subject(:black_pawn) { described_class.new(:black) }
 
       it "returns the black pawn unicode symbol (\u265F)" do
         expect(black_pawn.to_s).to eq("\u265F")
@@ -22,7 +22,7 @@ describe Pawn do
   end
 
   describe '#disable_double_step' do
-    subject(:pawn) { described_class.new(true) }
+    subject(:pawn) { described_class.new(:white) }
 
     it 'marks the pawn as having moved' do
       pawn.disable_double_step
@@ -32,7 +32,7 @@ describe Pawn do
 
   describe '#moves' do
     context 'when the pawn is white' do
-      subject(:white_pawn) { described_class.new(true) }
+      subject(:white_pawn) { described_class.new(:white) }
 
       it 'returns the forward and double-step movement vectors on the first move' do
         expect(white_pawn.moves).to contain_exactly([1, 0], [2, 0])
@@ -45,7 +45,7 @@ describe Pawn do
     end
 
     context 'when the pawn is black' do
-      subject(:black_pawn) { described_class.new(false) }
+      subject(:black_pawn) { described_class.new(:black) }
 
       it 'returns the forward and double-step movement vectors on the first move' do
         expect(black_pawn.moves).to contain_exactly([-1, 0], [-2, 0])
@@ -60,7 +60,7 @@ describe Pawn do
 
   describe '#attacks' do
     context 'when the pawn is white' do
-      subject(:white_pawn) { described_class.new(true) }
+      subject(:white_pawn) { described_class.new(:white) }
 
       it 'returns the diagonally adjacent forward attack vectors' do
         expect(white_pawn.attacks).to contain_exactly([1, 1], [1, -1])
@@ -68,7 +68,7 @@ describe Pawn do
     end
 
     context 'when the pawn is black' do
-      subject(:black_pawn) { described_class.new(false) }
+      subject(:black_pawn) { described_class.new(:black) }
 
       it 'returns the diagonally adjacent forward attack vectors' do
         expect(black_pawn.attacks).to contain_exactly([-1, 1], [-1, -1])

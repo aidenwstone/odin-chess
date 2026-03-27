@@ -16,7 +16,7 @@ describe Queen do
 
   describe '#to_s' do
     context 'when the queen is white' do
-      subject(:white_queen) { described_class.new(true) }
+      subject(:white_queen) { described_class.new(:white) }
 
       it "returns a white queen unicode symbol (\u2655)" do
         expect(white_queen.to_s).to eq("\u2655")
@@ -24,7 +24,7 @@ describe Queen do
     end
 
     context 'when the queen is black' do
-      subject(:black_queen) { described_class.new(false) }
+      subject(:black_queen) { described_class.new(:black) }
 
       it "returns a black queen unicode symbol (\u265B)" do
         expect(black_queen.to_s).to eq("\u265B")
@@ -33,7 +33,7 @@ describe Queen do
   end
 
   describe '#moves' do
-    subject(:queen) { described_class.new(true) }
+    subject(:queen) { described_class.new(:white) }
 
     it 'returns the orthogonal and diagonal movement vectors' do
       expect(queen.moves).to match_array(movement_vectors)
@@ -41,7 +41,7 @@ describe Queen do
   end
 
   describe '#attacks' do
-    subject(:queen) { described_class.new(true) }
+    subject(:queen) { described_class.new(:white) }
 
     it 'returns the orthogonal and diagonal attack vectors' do
       expect(queen.attacks).to match_array(movement_vectors)

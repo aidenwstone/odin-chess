@@ -15,16 +15,16 @@ class Piece
                     [-1, -1], [-2, -2], [-3, -3], [-4, -4], [-5, -5], [-6, -6], [-7, -7]]
                    .freeze
 
-  def initialize(is_white)
-    @is_white = is_white
+  def initialize(color)
+    @color = color
   end
 
   def white?
-    @is_white
+    @color == :white
   end
 
   def black?
-    !@is_white
+    @color == :black
   end
 
   def moves
