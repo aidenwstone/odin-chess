@@ -15,7 +15,7 @@ describe Rook do
       subject(:white_rook) { described_class.new(true) }
 
       it "returns the white rook unicode symbol (\u2656)" do
-        expect(white_rook.to_s).to be("\u2656")
+        expect(white_rook.to_s).to eq("\u2656")
       end
     end
 
@@ -23,7 +23,7 @@ describe Rook do
       subject(:black_rook) { described_class.new(false) }
 
       it "returns the black rook unicode symbol (\u265C)" do
-        expect(black_rook.to_s).to be("\u265C")
+        expect(black_rook.to_s).to eq("\u265C")
       end
     end
   end

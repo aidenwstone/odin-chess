@@ -19,7 +19,7 @@ describe Queen do
       subject(:white_queen) { described_class.new(true) }
 
       it "returns a white queen unicode symbol (\u2655)" do
-        expect(white_queen.to_s).to be("\u2655")
+        expect(white_queen.to_s).to eq("\u2655")
       end
     end
 
@@ -27,7 +27,7 @@ describe Queen do
       subject(:black_queen) { described_class.new(false) }
 
       it "returns a black queen unicode symbol (\u265B)" do
-        expect(black_queen.to_s).to be("\u265B")
+        expect(black_queen.to_s).to eq("\u265B")
       end
     end
   end

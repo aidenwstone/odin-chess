@@ -8,7 +8,7 @@ describe Pawn do
       subject(:white_pawn) { described_class.new(true) }
 
       it "returns the white pawn unicode symbol (\u2659)" do
-        expect(white_pawn.to_s).to be("\u2659")
+        expect(white_pawn.to_s).to eq("\u2659")
       end
     end
 
@@ -16,7 +16,7 @@ describe Pawn do
       subject(:black_pawn) { described_class.new(false) }
 
       it "returns the black pawn unicode symbol (\u265F)" do
-        expect(black_pawn.to_s).to be("\u265F")
+        expect(black_pawn.to_s).to eq("\u265F")
       end
     end
   end
