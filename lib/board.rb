@@ -15,8 +15,10 @@ class Board
 
   attr_reader :grid
 
-  def initialize
+  def initialize(setup: :standard)
     @grid = Array.new(8) { Array.new(8) }
+
+    return if setup == :empty
 
     # Place pieces in the back rank for each player
     @grid[0] = BACK_RANK.map { |type| build_piece(type, :white) }
