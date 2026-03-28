@@ -11,6 +11,7 @@ require './lib/pawn'
 # information such as whether or not a given move is legal.
 class Board
   BACK_RANK = %i[rook knight bishop queen king bishop knight rook].freeze
+  FILE_LABELS = %i[a b c d e f g h].freeze
 
   attr_reader :grid
 
@@ -26,6 +27,18 @@ class Board
     @grid[6] = Array.new(8) { build_piece(:pawn, :black) }
   end
 
+  def show(perspective)
+    board_view = rows_for(perspective)
+
+    draw_file_labels(perspective)
+    board_view.each_with_index do |row, index|
+      draw_divider_line
+      draw_row(perspective, row, index)
+    end
+    draw_divider_line
+    draw_file_labels(perspective)
+  end
+
   private
 
   def build_piece(type, color)
@@ -37,5 +50,30 @@ class Board
     when :king   then King.new(color)
     when :pawn   then Pawn.new(color)
     end
+  end
+
+  def rows_for(perspective)
+    perspective == :white ? @grid.reverse : @grid
+  end
+
+  def draw_file_labels(perspective)
+    labels = perspective == :white ? FILE_LABELS : FILE_LABELS.reverse
+
+    puts "    #{labels.join('   ')}"
+  end
+
+  def draw_divider_line
+    puts '  +---+---+---+---+---+---+---+---+'
+  end
+
+  def draw_row(perspective, row, index)
+    squares = row.map { |char| char || ' ' }
+    rank = rank_label(perspective, index)
+
+    puts "#{rank} | #{squares.join(' | ')} | #{rank}"
+  end
+
+  def rank_label(perspective, index)
+    perspective == :white ? 8 - index : index + 1
   end
 end
