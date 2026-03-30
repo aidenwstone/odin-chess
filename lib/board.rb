@@ -29,6 +29,12 @@ class Board
     @grid[6] = Array.new(8) { build_piece(:pawn, :black) }
   end
 
+  def place_piece(piece, row, col)
+    raise(ArgumentError, 'invalid coordinates') unless row.between?(0, 7) && col.between?(0, 7)
+
+    @grid[row][col] = piece
+  end
+
   def show(perspective)
     board_view = rows_for(perspective)
 
