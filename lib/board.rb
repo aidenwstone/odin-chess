@@ -35,6 +35,17 @@ class Board
     @grid[row][col] = piece
   end
 
+  def remove_piece(row, col)
+    raise(ArgumentError, 'invalid coordinates') unless row.between?(0, 7) && col.between?(0, 7)
+
+    piece = @grid[row][col]
+    raise('empty square') if piece.nil?
+
+    @grid[row][col] = nil
+
+    piece
+  end
+
   def show(perspective)
     board_view = rows_for(perspective)
 
