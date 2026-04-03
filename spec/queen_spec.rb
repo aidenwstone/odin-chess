@@ -3,15 +3,11 @@
 require './lib/queen'
 
 describe Queen do
-  let(:movement_vectors) do
-    [[0, -7], [0, -6], [0, -5], [0, -4], [0, -3], [0, -2], [0, -1],
-     [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7],
-     [-7, 0], [-6, 0], [-5, 0], [-4, 0], [-3, 0], [-2, 0], [-1, 0],
-     [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0],
-     [-7, 7], [-6, 6], [-5, 5], [-4, 4], [-3, 3], [-2, 2], [-1, 1],
-     [1, -1], [2, -2], [3, -3], [4, -4], [5, -5], [6, -6], [7, -7],
-     [7, 7], [6, 6], [5, 5], [4, 4], [3, 3], [2, 2], [1, 1],
-     [-1, -1], [-2, -2], [-3, -3], [-4, -4], [-5, -5], [-6, -6], [-7, -7]]
+  let(:movement_directions) do
+    [
+      [1, 0], [0, 1], [-1, 0], [0, -1],
+      [1, -1], [1, 1], [-1, 1], [-1, -1]
+    ]
   end
 
   describe '#to_s' do
@@ -35,16 +31,16 @@ describe Queen do
   describe '#moves' do
     subject(:queen) { described_class.new(:white) }
 
-    it 'returns the orthogonal and diagonal movement vectors' do
-      expect(queen.moves).to match_array(movement_vectors)
+    it 'returns the orthogonal and diagonal movement directions' do
+      expect(queen.moves).to match_array(movement_directions)
     end
   end
 
   describe '#attacks' do
     subject(:queen) { described_class.new(:white) }
 
-    it 'returns the orthogonal and diagonal attack vectors' do
-      expect(queen.attacks).to match_array(movement_vectors)
+    it 'returns the orthogonal and diagonal attack directions' do
+      expect(queen.attacks).to match_array(movement_directions)
     end
   end
 end

@@ -3,11 +3,8 @@
 require './lib/rook'
 
 describe Rook do
-  let(:movement_vectors) do
-    [[0, -7], [0, -6], [0, -5], [0, -4], [0, -3], [0, -2], [0, -1],
-     [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7],
-     [-7, 0], [-6, 0], [-5, 0], [-4, 0], [-3, 0], [-2, 0], [-1, 0],
-     [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0]]
+  let(:movement_directions) do
+    [[1, 0], [0, 1], [-1, 0], [0, -1]]
   end
 
   describe '#to_s' do
@@ -31,16 +28,16 @@ describe Rook do
   describe '#moves' do
     subject(:rook) { described_class.new(:white) }
 
-    it 'returns the orthogonal movement vectors' do
-      expect(rook.moves).to match_array(movement_vectors)
+    it 'returns the orthogonal movement directions' do
+      expect(rook.moves).to match_array(movement_directions)
     end
   end
 
   describe '#attacks' do
     subject(:rook) { described_class.new(:white) }
 
-    it 'returns the orthogonal attack vectors' do
-      expect(rook.attacks).to match_array(movement_vectors)
+    it 'returns the orthogonal attack directions' do
+      expect(rook.attacks).to match_array(movement_directions)
     end
   end
 end

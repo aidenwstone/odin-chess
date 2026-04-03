@@ -3,11 +3,8 @@
 require './lib/bishop'
 
 describe Bishop do
-  let(:movement_vectors) do
-    [[-7, 7], [-6, 6], [-5, 5], [-4, 4], [-3, 3], [-2, 2], [-1, 1],
-     [1, -1], [2, -2], [3, -3], [4, -4], [5, -5], [6, -6], [7, -7],
-     [7, 7], [6, 6], [5, 5], [4, 4], [3, 3], [2, 2], [1, 1],
-     [-1, -1], [-2, -2], [-3, -3], [-4, -4], [-5, -5], [-6, -6], [-7, -7]]
+  let(:movement_directions) do
+    [[1, -1], [1, 1], [-1, 1], [-1, -1]]
   end
 
   describe '#to_s' do
@@ -31,16 +28,16 @@ describe Bishop do
   describe '#moves' do
     subject(:bishop) { described_class.new(:white) }
 
-    it 'returns the diagonal movement vectors' do
-      expect(bishop.moves).to match_array(movement_vectors)
+    it 'returns the diagonal movement directions' do
+      expect(bishop.moves).to match_array(movement_directions)
     end
   end
 
   describe '#attacks' do
     subject(:bishop) { described_class.new(:white) }
 
-    it 'returns the diagonal attack vectors' do
-      expect(bishop.attacks).to match_array(movement_vectors)
+    it 'returns the diagonal attack directions' do
+      expect(bishop.attacks).to match_array(movement_directions)
     end
   end
 end

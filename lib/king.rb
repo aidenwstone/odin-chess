@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require './lib/piece'
+require './lib/stepping_piece'
 
 # The King subclass manages a King chess piece.
 # It implements the abstract methods from the Piece superclass.
-class King < Piece
+class King < SteppingPiece
   POSSIBLE_MOVES = [[1, -1], [1, 0], [1, 1], [0, -1], [0, 1], [-1, -1], [-1, 0], [-1, 1]].freeze
 
   def to_s
