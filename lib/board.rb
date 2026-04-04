@@ -9,7 +9,7 @@ require './lib/pawn'
 
 # The Board class manages the state of the chessboard, keeping track of where pieces are as well as providing
 # information such as whether or not a given move is legal.
-class Board
+class Board # rubocop:disable Metrics/ClassLength
   BACK_RANK = %i[rook knight bishop queen king bishop knight rook].freeze
   FILE_LABELS = %i[a b c d e f g h].freeze
 
@@ -58,6 +58,18 @@ class Board
     draw_file_labels(perspective)
   end
 
+  def available_moves(start_square)
+    piece = @grid.dig(*start_square)
+
+    if piece.instance_of?(Pawn)
+      pawn_movements(piece, start_square)
+    elsif piece.movement_type == :sliding
+      sliding_movements(piece, start_square)
+    elsif piece.movement_type == :stepping
+      stepping_movements(piece, start_square)
+    end
+  end
+
   private
 
   def build_piece(type, color)
@@ -94,5 +106,44 @@ class Board
 
   def rank_label(perspective, index)
     perspective == :white ? 8 - index : index + 1
+  end
+
+  def pawn_movements(piece, start_square)
+    piece.moves.each_with_object([]) do |vector, squares|
+      new_square = start_square.zip(vector).map(&:sum)
+
+      return squares unless on_board?(new_square) && square_available?(new_square)
+
+      squares << new_square
+    end
+  end
+
+  def sliding_movements(piece, start_square)
+    piece.moves.each_with_object([]) do |direction, squares|
+      (1..7).each do |step|
+        vector = direction.map { |delta| delta * step }
+        new_square = start_square.zip(vector).map(&:sum)
+
+        break unless on_board?(new_square) && square_available?(new_square)
+
+        squares << new_square
+      end
+    end
+  end
+
+  def stepping_movements(piece, start_square)
+    piece.moves.filter_map do |vector|
+      new_square = start_square.zip(vector).map(&:sum)
+      new_square if on_board?(new_square) && square_available?(new_square)
+    end
+  end
+
+  def on_board?(square)
+    row, col = square
+    row.between?(0, 7) && col.between?(0, 7)
+  end
+
+  def square_available?(square)
+    @grid.dig(*square).nil?
   end
 end

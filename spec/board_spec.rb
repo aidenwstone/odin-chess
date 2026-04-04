@@ -71,4 +71,235 @@ describe Board do
       end
     end
   end
+
+  describe '#available_moves' do
+    subject(:board) { described_class.new(setup: :empty) }
+
+    context 'when a rook has clear paths' do
+      let(:valid_moves) do
+        [
+          [4, 2], [4, 1], [4, 0],
+          [5, 3], [6, 3], [7, 3],
+          [4, 4], [4, 5], [4, 6], [4, 7],
+          [3, 3], [2, 3], [1, 3], [0, 3]
+        ]
+      end
+
+      before do
+        board.place_piece(Rook.new(:white), 4, 3)
+      end
+
+      it 'returns all orthogonal squares' do
+        expect(board.available_moves([4, 3])).to match_array(valid_moves)
+      end
+    end
+
+    context 'when a rook has blocked paths' do
+      let(:valid_moves_blocked) do
+        [
+          [5, 3], [6, 3], [7, 3],
+          [4, 0], [4, 1], [4, 2], [4, 4]
+        ]
+      end
+
+      before do
+        board.place_piece(Rook.new(:white), 4, 3)
+        board.place_piece(Piece.new(:black), 4, 5)
+        board.place_piece(Piece.new(:white), 3, 3)
+      end
+
+      it 'returns all non-blocked orthogonal squares' do
+        expect(board.available_moves([4, 3])).to match_array(valid_moves_blocked)
+      end
+    end
+
+    context 'when a bishop has clear paths' do
+      let(:valid_moves) do
+        [
+          [4, 2], [5, 1], [6, 0],
+          [4, 4], [5, 5], [6, 6], [7, 7],
+          [2, 2], [1, 1], [0, 0],
+          [2, 4], [1, 5], [0, 6]
+        ]
+      end
+
+      before do
+        board.place_piece(Bishop.new(:white), 3, 3)
+      end
+
+      it 'returns all diagonal squares' do
+        expect(board.available_moves([3, 3])).to match_array(valid_moves)
+      end
+    end
+
+    context 'when a bishop has blocked paths' do
+      let(:valid_moves_blocked) do
+        [
+          [4, 2], [5, 1], [6, 0],
+          [4, 4],
+          [2, 2], [1, 1], [0, 0]
+        ]
+      end
+
+      before do
+        board.place_piece(Bishop.new(:white), 3, 3)
+        board.place_piece(Piece.new(:black), 5, 5)
+        board.place_piece(Piece.new(:white), 2, 4)
+      end
+
+      it 'returns all non-blocked diagonal squares' do
+        expect(board.available_moves([3, 3])).to match_array(valid_moves_blocked)
+      end
+    end
+
+    context 'when a queen has clear paths' do
+      let(:valid_moves) do
+        [
+          [3, 2], [3, 1], [3, 0],
+          [4, 3], [5, 3], [6, 3], [7, 3],
+          [3, 4], [3, 5], [3, 6], [3, 7],
+          [2, 3], [1, 3], [0, 3],
+          [4, 2], [5, 1], [6, 0],
+          [4, 4], [5, 5], [6, 6], [7, 7],
+          [2, 2], [1, 1], [0, 0],
+          [2, 4], [1, 5], [0, 6]
+        ]
+      end
+
+      before do
+        board.place_piece(Queen.new(:white), 3, 3)
+      end
+
+      it 'returns all orthogonal and diagonal squares' do
+        expect(board.available_moves([3, 3])).to match_array(valid_moves)
+      end
+    end
+
+    context 'when a queen has blocked paths' do
+      let(:valid_moves_blocked) do
+        [
+          [4, 3],
+          [3, 4], [3, 5], [3, 6], [3, 7],
+          [2, 3], [1, 3], [0, 3],
+          [4, 2], [5, 1], [6, 0],
+          [4, 4],
+          [2, 2], [1, 1], [0, 0]
+        ]
+      end
+
+      before do
+        board.place_piece(Queen.new(:white), 3, 3)
+        board.place_piece(Piece.new(:black), 3, 2)
+        board.place_piece(Piece.new(:white), 5, 3)
+        board.place_piece(Piece.new(:black), 5, 5)
+        board.place_piece(Piece.new(:white), 2, 4)
+      end
+
+      it 'returns all non-blocked orthogonal and diagonal squares' do
+        expect(board.available_moves([3, 3])).to match_array(valid_moves_blocked)
+      end
+    end
+
+    context 'when a knight has clear squares' do
+      let(:valid_moves) { [[5, 1], [6, 2], [6, 4], [5, 5], [3, 5], [2, 4], [2, 2], [3, 1]] }
+
+      before do
+        board.place_piece(Knight.new(:white), 4, 3)
+      end
+
+      it 'returns all L-shaped squares' do
+        expect(board.available_moves([4, 3])).to match_array(valid_moves)
+      end
+    end
+
+    context 'when a knight has blocked squares' do
+      let(:valid_moves_blocked) { [[5, 1], [6, 2], [5, 5], [3, 5], [2, 4], [2, 2]] }
+
+      before do
+        board.place_piece(Knight.new(:white), 4, 3)
+        board.place_piece(Piece.new(:black), 6, 4)
+        board.place_piece(Piece.new(:white), 3, 1)
+      end
+
+      it 'returns all empty L-shaped squares' do
+        expect(board.available_moves([4, 3])).to match_array(valid_moves_blocked)
+      end
+    end
+
+    context 'when a king has clear squares' do
+      let(:valid_moves) { [[4, 4], [5, 4], [5, 5], [5, 6], [4, 6], [3, 6], [3, 5], [3, 4]] }
+
+      before do
+        board.place_piece(King.new(:white), 4, 5)
+      end
+
+      it 'returns all adjacent squares' do
+        expect(board.available_moves([4, 5])).to match_array(valid_moves)
+      end
+    end
+
+    context 'when a king has blocked squares' do
+      let(:valid_moves_blocked) { [[4, 4], [5, 5], [5, 6], [4, 6], [3, 5], [3, 4]] }
+
+      before do
+        board.place_piece(King.new(:white), 4, 5)
+        board.place_piece(Piece.new(:black), 5, 4)
+        board.place_piece(Piece.new(:white), 3, 6)
+      end
+
+      it 'returns all empty adjacent squares' do
+        expect(board.available_moves([4, 5])).to match_array(valid_moves_blocked)
+      end
+    end
+
+    context "when a pawn on it's first move has clear squares" do
+      let(:valid_moves) { [[2, 1], [3, 1]] }
+
+      before do
+        board.place_piece(Pawn.new(:white), 1, 1)
+      end
+
+      it 'returns the two squares in front of the pawn' do
+        expect(board.available_moves([1, 1])).to match_array(valid_moves)
+      end
+    end
+
+    context "when a pawn on it's first move has blocked squares" do
+      before do
+        board.place_piece(Pawn.new(:white), 1, 1)
+        board.place_piece(Piece.new(:black), 2, 1)
+      end
+
+      it 'returns an empty array' do
+        expect(board.available_moves([1, 1])).to be_empty
+      end
+    end
+
+    context 'when a pawn on a subsequent move has a clear square' do
+      let(:valid_moves) { [[6, 2]] }
+
+      before do
+        pawn = Pawn.new(:white)
+        board.place_piece(pawn, 5, 2)
+        pawn.disable_double_step
+      end
+
+      it 'returns the square in front of the pawn' do
+        expect(board.available_moves([5, 2])).to match_array(valid_moves)
+      end
+    end
+
+    context 'when a pawn on a subsequent move has a blocked square' do
+      before do
+        pawn = Pawn.new(:white)
+        pawn.disable_double_step
+        board.place_piece(pawn, 5, 2)
+        board.place_piece(Piece.new(:black), 6, 2)
+      end
+
+      it 'returns an empty array' do
+        expect(board.available_moves([5, 2])).to be_empty
+      end
+    end
+  end
 end
