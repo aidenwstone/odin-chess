@@ -3,6 +3,8 @@
 # The Piece class serves as the superclass for the SteppingPiece and SlidingPiece classes.
 # It stores the color of the piece and provides abstract methods for subclasses to implement.
 class Piece
+  attr_reader :color
+
   def initialize(color)
     @color = color
   end
@@ -13,6 +15,12 @@ class Piece
 
   def black?
     @color == :black
+  end
+
+  def enemy_of?(piece)
+    return false unless piece
+
+    @color != piece.color
   end
 
   def moves
