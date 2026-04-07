@@ -119,15 +119,12 @@ class Board # rubocop:disable Metrics/ClassLength
   end
 
   def sliding_movements(piece, start_square)
-    piece.moves.each_with_object([]) do |direction, squares|
-      (1..7).each do |step|
-        vector = direction.map { |delta| delta * step }
-        new_square = start_square.zip(vector).map(&:sum)
-
-        break unless on_board?(new_square) && square_available?(new_square)
-
-        squares << new_square
+    piece.moves.each_with_object([]) do |direction, movements|
+      new_movements = squares_along_ray(start_square, direction).filter do |square|
+        square_available?(square)
       end
+
+      movements.concat(new_movements)
     end
   end
 
@@ -145,5 +142,22 @@ class Board # rubocop:disable Metrics/ClassLength
 
   def square_available?(square)
     @grid.dig(*square).nil?
+  end
+
+  def squares_along_ray(start_square, direction)
+    (1..7).each_with_object([]) do |step, squares|
+      new_square = square_in_direction(start_square, direction, step)
+      break squares unless on_board?(new_square)
+
+      squares << new_square
+
+      piece = @grid.dig(*new_square)
+      break squares if piece
+    end
+  end
+
+  def square_in_direction(start_square, direction, step)
+    vector = direction.map { |delta| delta * step }
+    start_square.zip(vector).map(&:sum)
   end
 end
