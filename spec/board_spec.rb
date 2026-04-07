@@ -302,4 +302,168 @@ describe Board do
       end
     end
   end
+
+  describe '#available_attacks' do
+    subject(:board) { described_class.new(setup: :empty) }
+
+    context 'when a rook has available attacks' do
+      let(:valid_attacks) { [[4, 1], [0, 3]] }
+
+      before do
+        board.place_piece(Rook.new(:white), 4, 3)
+        board.place_piece(Piece.new(:black), 4, 1)
+        board.place_piece(Piece.new(:black), 4, 0)
+        board.place_piece(Piece.new(:white), 6, 3)
+        board.place_piece(Piece.new(:black), 7, 3)
+        board.place_piece(Piece.new(:black), 0, 3)
+      end
+
+      it 'returns all non-blocked enemy-occupied orthogonal squares' do
+        expect(board.available_attacks([4, 3])).to match_array(valid_attacks)
+      end
+    end
+
+    context 'when a rook has no available attacks' do
+      before do
+        board.place_piece(Rook.new(:white), 4, 3)
+      end
+
+      it 'returns an empty array' do
+        expect(board.available_attacks([4, 3])).to be_empty
+      end
+    end
+
+    context 'when a bishop has available attacks' do
+      let(:valid_attacks) { [[5, 5], [5, 1]] }
+
+      before do
+        board.place_piece(Bishop.new(:white), 3, 3)
+        board.place_piece(Piece.new(:black), 5, 5)
+        board.place_piece(Piece.new(:black), 6, 6)
+        board.place_piece(Piece.new(:white), 1, 5)
+        board.place_piece(Piece.new(:black), 0, 6)
+        board.place_piece(Piece.new(:black), 5, 1)
+      end
+
+      it 'returns all non-blocked enemy-occupied diagonal squares' do
+        expect(board.available_attacks([3, 3])).to match_array(valid_attacks)
+      end
+    end
+
+    context 'when a bishop has no available attacks' do
+      before do
+        board.place_piece(Bishop.new(:white), 3, 3)
+      end
+
+      it 'returns an empty array' do
+        expect(board.available_attacks([3, 3])).to be_empty
+      end
+    end
+
+    context 'when a queen has available attacks' do
+      let(:valid_attacks) { [[3, 5], [5, 5], [5, 1]] }
+
+      before do
+        board.place_piece(Queen.new(:white), 3, 3)
+        board.place_piece(Piece.new(:black), 3, 5)
+        board.place_piece(Piece.new(:black), 3, 6)
+        board.place_piece(Piece.new(:white), 5, 3)
+        board.place_piece(Piece.new(:black), 6, 3)
+        board.place_piece(Piece.new(:black), 5, 5)
+        board.place_piece(Piece.new(:black), 6, 6)
+        board.place_piece(Piece.new(:white), 1, 5)
+        board.place_piece(Piece.new(:black), 0, 6)
+        board.place_piece(Piece.new(:black), 5, 1)
+      end
+
+      it 'returns all non-blocked enemy-occupied orthogonal and diagonal squares' do
+        expect(board.available_attacks([3, 3])).to match_array(valid_attacks)
+      end
+    end
+
+    context 'when a queen has no available attacks' do
+      before do
+        board.place_piece(Queen.new(:white), 3, 3)
+      end
+
+      it 'returns an empty array' do
+        expect(board.available_attacks([3, 3])).to be_empty
+      end
+    end
+
+    context 'when a knight has available attacks' do
+      let(:valid_attacks) { [[5, 1], [2, 2]] }
+
+      before do
+        board.place_piece(Knight.new(:white), 4, 3)
+        board.place_piece(Piece.new(:black), 5, 1)
+        board.place_piece(Piece.new(:white), 2, 4)
+        board.place_piece(Piece.new(:black), 2, 2)
+      end
+
+      it 'returns all enemy-occupied L-shaped attack squares' do
+        expect(board.available_attacks([4, 3])).to match_array(valid_attacks)
+      end
+    end
+
+    context 'when a knight has no available attacks' do
+      before do
+        board.place_piece(Knight.new(:white), 4, 3)
+      end
+
+      it 'returns an empty array' do
+        expect(board.available_attacks([4, 3])).to be_empty
+      end
+    end
+
+    context 'when a king has available attacks' do
+      let(:available_attacks) { [[4, 4], [4, 6]] }
+
+      before do
+        board.place_piece(King.new(:white), 4, 5)
+        board.place_piece(Piece.new(:black), 4, 4)
+        board.place_piece(Piece.new(:white), 5, 6)
+        board.place_piece(Piece.new(:black), 4, 6)
+      end
+
+      it 'returns all enemy-occupied adjacent squares' do
+        expect(board.available_attacks([4, 5])).to match_array(available_attacks)
+      end
+    end
+
+    context 'when a king has no available attacks' do
+      before do
+        board.place_piece(King.new(:white), 4, 5)
+      end
+
+      it 'returns an empty array' do
+        expect(board.available_attacks([4, 5])).to be_empty
+      end
+    end
+
+    context 'when a pawn has available attacks' do
+      let(:valid_attacks) { [[2, 0]] }
+
+      before do
+        board.place_piece(Pawn.new(:white), 1, 1)
+        board.place_piece(Piece.new(:black), 2, 0)
+        board.place_piece(Piece.new(:black), 2, 1)
+        board.place_piece(Piece.new(:white), 2, 2)
+      end
+
+      it 'returns all enemy-occupied diagonally adjacent forward squares' do
+        expect(board.available_attacks([1, 1])).to match_array(valid_attacks)
+      end
+    end
+
+    context 'when a pawn has no available attacks' do
+      before do
+        board.place_piece(Pawn.new(:white), 1, 1)
+      end
+
+      it 'returns an empty array' do
+        expect(board.available_attacks([1, 1])).to be_empty
+      end
+    end
+  end
 end

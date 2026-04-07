@@ -70,6 +70,16 @@ class Board # rubocop:disable Metrics/ClassLength
     end
   end
 
+  def available_attacks(start_square)
+    piece = @grid.dig(*start_square)
+
+    if piece.movement_type == :sliding
+      sliding_attacks(piece, start_square)
+    elsif piece.movement_type == :stepping
+      stepping_attacks(piece, start_square)
+    end
+  end
+
   private
 
   def build_piece(type, color)
@@ -132,6 +142,25 @@ class Board # rubocop:disable Metrics/ClassLength
     piece.moves.filter_map do |vector|
       new_square = square_from_vector(start_square, vector)
       new_square if on_board?(new_square) && square_available?(new_square)
+    end
+  end
+
+  def sliding_attacks(piece, start_square)
+    piece.attacks.each_with_object([]) do |direction, attacks|
+      new_attacks = squares_along_ray(start_square, direction).filter do |square|
+        found_piece = @grid.dig(*square)
+        piece.enemy_of?(found_piece)
+      end
+
+      attacks.concat(new_attacks)
+    end
+  end
+
+  def stepping_attacks(piece, start_square)
+    piece.attacks.filter_map do |vector|
+      new_square = square_from_vector(start_square, vector)
+      found_piece = @grid.dig(*new_square)
+      new_square if on_board?(new_square) && piece.enemy_of?(found_piece)
     end
   end
 
