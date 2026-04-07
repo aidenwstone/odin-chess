@@ -110,7 +110,7 @@ class Board # rubocop:disable Metrics/ClassLength
 
   def pawn_movements(piece, start_square)
     piece.moves.each_with_object([]) do |vector, squares|
-      new_square = start_square.zip(vector).map(&:sum)
+      new_square = square_from_vector(start_square, vector)
 
       return squares unless on_board?(new_square) && square_available?(new_square)
 
@@ -130,7 +130,7 @@ class Board # rubocop:disable Metrics/ClassLength
 
   def stepping_movements(piece, start_square)
     piece.moves.filter_map do |vector|
-      new_square = start_square.zip(vector).map(&:sum)
+      new_square = square_from_vector(start_square, vector)
       new_square if on_board?(new_square) && square_available?(new_square)
     end
   end
@@ -142,6 +142,10 @@ class Board # rubocop:disable Metrics/ClassLength
 
   def square_available?(square)
     @grid.dig(*square).nil?
+  end
+
+  def square_from_vector(start_square, vector)
+    start_square.zip(vector).map(&:sum)
   end
 
   def squares_along_ray(start_square, direction)
@@ -158,6 +162,6 @@ class Board # rubocop:disable Metrics/ClassLength
 
   def square_in_direction(start_square, direction, step)
     vector = direction.map { |delta| delta * step }
-    start_square.zip(vector).map(&:sum)
+    square_from_vector(start_square, vector)
   end
 end
