@@ -466,4 +466,30 @@ describe Board do
       end
     end
   end
+
+  describe '#check?' do
+    subject(:board) { described_class.new(setup: :empty) }
+
+    context 'when the king is in check' do
+      before do
+        board.place_piece(King.new(:black), 5, 2)
+        board.place_piece(Rook.new(:white), 1, 2)
+      end
+
+      it 'returns true' do
+        expect(board.check?(:black)).to be true
+      end
+    end
+
+    context 'when the king is not in check' do
+      before do
+        board.place_piece(King.new(:black), 5, 2)
+        board.place_piece(Rook.new(:black), 1, 2)
+      end
+
+      it 'returns false' do
+        expect(board.check?(:black)).to be false
+      end
+    end
+  end
 end

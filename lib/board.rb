@@ -80,6 +80,18 @@ class Board # rubocop:disable Metrics/ClassLength
     end
   end
 
+  def check?(color)
+    (0..7).to_a.product((0..7).to_a).any? do |square|
+      piece = @grid.dig(*square)
+
+      next if piece.nil? || piece.color == color
+
+      available_attacks(square).any? do |attack_square|
+        @grid.dig(*attack_square).instance_of?(King)
+      end
+    end
+  end
+
   private
 
   def build_piece(type, color)
