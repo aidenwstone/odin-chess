@@ -97,6 +97,14 @@ class Board # rubocop:disable Metrics/ClassLength
     end
   end
 
+  def prevents_check?(start_square, target_square)
+    piece = move_piece(start_square, target_square)
+    is_check = check?(piece.color)
+
+    move_piece(target_square, start_square)
+    !is_check
+  end
+
   private
 
   def build_piece(type, color)

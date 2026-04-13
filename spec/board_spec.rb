@@ -516,4 +516,32 @@ describe Board do
       end
     end
   end
+
+  describe '#prevents_check?' do
+    subject(:board) { described_class.new(setup: :empty) }
+
+    context 'when a move will cause the king to be in check' do
+      before do
+        board.place_piece(King.new(:black), 5, 2)
+        board.place_piece(Rook.new(:black), 3, 2)
+        board.place_piece(Rook.new(:white), 1, 2)
+      end
+
+      it 'returns false' do
+        expect(board.prevents_check?([3, 2], [3, 4])).to be false
+      end
+    end
+
+    context 'when a move will not cause the king to be in check' do
+      before do
+        board.place_piece(King.new(:black), 5, 2)
+        board.place_piece(Rook.new(:black), 3, 2)
+        board.place_piece(Rook.new(:white), 1, 2)
+      end
+
+      it 'returns true' do
+        expect(board.prevents_check?([3, 2], [2, 2])).to be true
+      end
+    end
+  end
 end
