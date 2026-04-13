@@ -132,11 +132,11 @@ class Board # rubocop:disable Metrics/ClassLength
 
   def pawn_movements(piece, start_square)
     piece.moves.each_with_object([]) do |vector, squares|
-      new_square = square_from_vector(start_square, vector)
+      target_square = square_from_vector(start_square, vector)
 
-      return squares unless on_board?(new_square) && square_available?(new_square)
+      return squares unless on_board?(target_square) && square_available?(target_square)
 
-      squares << new_square
+      squares << target_square
     end
   end
 
@@ -152,8 +152,8 @@ class Board # rubocop:disable Metrics/ClassLength
 
   def stepping_movements(piece, start_square)
     piece.moves.filter_map do |vector|
-      new_square = square_from_vector(start_square, vector)
-      new_square if on_board?(new_square) && square_available?(new_square)
+      target_square = square_from_vector(start_square, vector)
+      target_square if on_board?(target_square) && square_available?(target_square)
     end
   end
 
@@ -170,9 +170,9 @@ class Board # rubocop:disable Metrics/ClassLength
 
   def stepping_attacks(piece, start_square)
     piece.attacks.filter_map do |vector|
-      new_square = square_from_vector(start_square, vector)
-      found_piece = @grid.dig(*new_square)
-      new_square if on_board?(new_square) && piece.enemy_of?(found_piece)
+      target_square = square_from_vector(start_square, vector)
+      found_piece = @grid.dig(*target_square)
+      target_square if on_board?(target_square) && piece.enemy_of?(found_piece)
     end
   end
 
@@ -191,12 +191,12 @@ class Board # rubocop:disable Metrics/ClassLength
 
   def squares_along_ray(start_square, direction)
     (1..7).each_with_object([]) do |step, squares|
-      new_square = square_in_direction(start_square, direction, step)
-      break squares unless on_board?(new_square)
+      target_square = square_in_direction(start_square, direction, step)
+      break squares unless on_board?(target_square)
 
-      squares << new_square
+      squares << target_square
 
-      piece = @grid.dig(*new_square)
+      piece = @grid.dig(*target_square)
       break squares if piece
     end
   end
