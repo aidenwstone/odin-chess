@@ -72,6 +72,30 @@ describe Board do
     end
   end
 
+  describe '#move_piece' do
+    subject(:board) { described_class.new(setup: :empty) }
+
+    let(:piece) { Piece.new(:white) }
+
+    before do
+      board.place_piece(piece, 3, 5)
+    end
+
+    it 'removes the piece from the old square' do
+      board.move_piece([3, 5], [3, 1])
+      expect(board.grid.dig(3, 5)).to be_nil
+    end
+
+    it 'places the piece on the target square' do
+      board.move_piece([3, 5], [3, 1])
+      expect(board.grid.dig(3, 1)).to be(piece)
+    end
+
+    it 'returns the piece' do
+      expect(board.move_piece([3, 5], [3, 1])).to be(piece)
+    end
+  end
+
   describe '#available_moves' do
     subject(:board) { described_class.new(setup: :empty) }
 

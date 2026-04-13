@@ -46,6 +46,11 @@ class Board # rubocop:disable Metrics/ClassLength
     piece
   end
 
+  def move_piece(start_square, target_square)
+    piece = remove_piece(*start_square)
+    place_piece(piece, *target_square)
+  end
+
   def show(perspective)
     board_view = rows_for(perspective)
 
