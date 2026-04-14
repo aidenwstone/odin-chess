@@ -85,6 +85,15 @@ class Board # rubocop:disable Metrics/ClassLength
     end
   end
 
+  def legal_moves(start_square)
+    moves = available_moves(start_square).to_h { |square| [square, :move] }
+    attacks = available_attacks(start_square).to_h { |square| [square, :attack] }
+
+    moves.merge(attacks).filter do |target_square|
+      prevents_check?(start_square, target_square)
+    end
+  end
+
   def check?(color)
     (0..7).to_a.product((0..7).to_a).any? do |square|
       piece = @grid.dig(*square)

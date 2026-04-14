@@ -544,4 +544,84 @@ describe Board do
       end
     end
   end
+
+  describe '#legal_moves' do
+    subject(:board) { described_class.new(setup: :empty) }
+
+    context 'when some moves by a piece can get the king out of check' do
+      let(:legal_moves) do
+        {
+          [2, 2] => :attack,
+          [2, 4] => :move,
+          [2, 6] => :move
+        }
+      end
+
+      before do
+        board.place_piece(King.new(:white), 2, 7)
+        board.place_piece(Rook.new(:black), 2, 2)
+        board.place_piece(Queen.new(:white), 4, 4)
+      end
+
+      it 'returns only moves and attacks that will get the king out of check' do
+        expect(board.legal_moves([4, 4])).to match(legal_moves)
+      end
+    end
+
+    context 'when some moves by a piece would leave the king in check' do
+      let(:legal_moves) do
+        {
+          [2, 4] => :move,
+          [3, 4] => :move,
+          [4, 4] => :move,
+          [5, 4] => :move,
+          [6, 4] => :move,
+          [7, 4] => :attack
+        }
+      end
+
+      before do
+        board.place_piece(King.new(:white), 0, 4)
+        board.place_piece(Rook.new(:black), 7, 4)
+        board.place_piece(Rook.new(:white), 1, 4)
+      end
+
+      it 'returns only moves and attacks that will not leave the king in check' do
+        expect(board.legal_moves([1, 4])).to match(legal_moves)
+      end
+    end
+
+    context 'when any move by a piece would leave the king in check' do
+      before do
+        board.place_piece(King.new(:white), 3, 4)
+        board.place_piece(Bishop.new(:black), 6, 1)
+        board.place_piece(Rook.new(:white), 4, 3)
+      end
+
+      it 'returns an empty hash' do
+        expect(board.legal_moves([4, 3])).to be_empty
+      end
+    end
+
+    context 'when some moves by the king would cause check' do
+      let(:legal_moves) do
+        {
+          [4, 1] => :move,
+          [3, 3] => :attack,
+          [2, 2] => :move,
+          [2, 1] => :move
+        }
+      end
+
+      before do
+        board.place_piece(King.new(:white), 3, 2)
+        board.place_piece(Bishop.new(:black), 5, 3)
+        board.place_piece(Rook.new(:black), 3, 3)
+      end
+
+      it 'returns only moves and attacks that will not cause check' do
+        expect(board.legal_moves([3, 2])).to match(legal_moves)
+      end
+    end
+  end
 end
