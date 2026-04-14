@@ -11,4 +11,8 @@ class Game
     @board = Board.new
     @current_player = :white
   end
+
+  def switch_player
+    @current_player = current_player == :white ? :black : :white
+  end
 end
