@@ -66,6 +66,8 @@ class Board # rubocop:disable Metrics/ClassLength
   def available_moves(start_square)
     piece = @grid.dig(*start_square)
 
+    return if piece.nil?
+
     if piece.instance_of?(Pawn)
       pawn_movements(piece, start_square)
     elsif piece.movement_type == :sliding
@@ -77,6 +79,8 @@ class Board # rubocop:disable Metrics/ClassLength
 
   def available_attacks(start_square)
     piece = @grid.dig(*start_square)
+
+    return if piece.nil?
 
     if piece.movement_type == :sliding
       sliding_attacks(piece, start_square)

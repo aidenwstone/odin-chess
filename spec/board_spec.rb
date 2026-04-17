@@ -325,6 +325,12 @@ describe Board do
         expect(board.available_moves([5, 2])).to be_empty
       end
     end
+
+    context 'when no piece exist on the square' do
+      it 'returns nil' do
+        expect(board.available_moves([4, 5])).to be_nil
+      end
+    end
   end
 
   describe '#available_attacks' do
@@ -487,6 +493,12 @@ describe Board do
 
       it 'returns an empty array' do
         expect(board.available_attacks([1, 1])).to be_empty
+      end
+    end
+
+    context 'when no piece exist on the square' do
+      it 'returns nil' do
+        expect(board.available_attacks([4, 5])).to be_nil
       end
     end
   end
