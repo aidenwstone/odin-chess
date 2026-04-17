@@ -146,6 +146,7 @@ class Board # rubocop:disable Metrics/ClassLength
   end
 
   def draw_row(perspective, row, index)
+    row = row.reverse if perspective == :black
     squares = row.map { |char| char || ' ' }
     rank = rank_label(perspective, index)
 
