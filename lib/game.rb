@@ -31,6 +31,15 @@ class Game
   end
 
   def choose_target_square(start_square)
+    loop do
+      notation_selection = ask_for_input('Please select which square to move to using chess notation (e.g. b3 or f5):')
+      square = notation_to_coordinates(notation_selection)
+      legal_moves = board.legal_moves(start_square)
+
+      return square if legal_moves.include?(square)
+
+      puts 'Invalid selection, please try again.'
+    end
   end
 
   private
