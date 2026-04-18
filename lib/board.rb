@@ -12,6 +12,7 @@ require './lib/pawn'
 class Board # rubocop:disable Metrics/ClassLength
   BACK_RANK = %i[rook knight bishop queen king bishop knight rook].freeze
   FILE_LABELS = %i[a b c d e f g h].freeze
+  ALL_SQUARES = (0..7).to_a.product((0..7).to_a).freeze
 
   attr_reader :grid
 
@@ -99,7 +100,7 @@ class Board # rubocop:disable Metrics/ClassLength
   end
 
   def check?(color)
-    (0..7).to_a.product((0..7).to_a).any? do |square|
+    ALL_SQUARES.any? do |square|
       piece = @grid.dig(*square)
 
       next if piece.nil? || piece.color == color
@@ -117,6 +118,18 @@ class Board # rubocop:disable Metrics/ClassLength
 
     @grid = grid_backup
     !is_check
+  end
+
+  def checkmate?(color)
+    ALL_SQUARES.none? do |square|
+      piece = @grid.dig(*square)
+
+      next if piece.nil? || piece.color != color
+
+      available_moves(square).any? do |target_square|
+        prevents_check?(square, target_square)
+      end
+    end
   end
 
   private

@@ -569,6 +569,35 @@ describe Board do
     end
   end
 
+  describe '#checkmate?' do
+    subject(:board) { described_class.new(setup: :empty) }
+
+    context 'when the king is in checkmate' do
+      before do
+        board.place_piece(King.new(:white), 0, 7)
+        board.place_piece(King.new(:black), 2, 7)
+        board.place_piece(Bishop.new(:black), 2, 5)
+        board.place_piece(Bishop.new(:black), 2, 4)
+      end
+
+      it 'returns true' do
+        expect(board.checkmate?(:white)).to be true
+      end
+    end
+
+    context 'when the king is not in checkmate' do
+      before do
+        board.place_piece(King.new(:white), 0, 7)
+        board.place_piece(King.new(:black), 2, 7)
+        board.place_piece(Bishop.new(:black), 2, 5)
+      end
+
+      it 'returns false' do
+        expect(board.checkmate?(:white)).to be false
+      end
+    end
+  end
+
   describe '#legal_moves' do
     subject(:board) { described_class.new(setup: :empty) }
 
