@@ -542,6 +542,12 @@ describe Board do
       it 'returns false' do
         expect(board.prevents_check?([3, 2], [3, 4])).to be false
       end
+
+      it 'does not permanently modify the board' do
+        grid_before = board.grid.map(&:dup)
+        board.prevents_check?([3, 2], [3, 4])
+        expect(board.grid).to eq(grid_before)
+      end
     end
 
     context 'when a move will not cause the king to be in check' do
@@ -553,6 +559,12 @@ describe Board do
 
       it 'returns true' do
         expect(board.prevents_check?([3, 2], [2, 2])).to be true
+      end
+
+      it 'does not permanently modify the board' do
+        grid_before = board.grid.map(&:dup)
+        board.prevents_check?([3, 2], [3, 4])
+        expect(board.grid).to eq(grid_before)
       end
     end
   end

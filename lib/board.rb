@@ -111,10 +111,11 @@ class Board # rubocop:disable Metrics/ClassLength
   end
 
   def prevents_check?(start_square, target_square)
+    grid_backup = @grid.map(&:dup)
     piece = move_piece(start_square, target_square)
     is_check = check?(piece.color)
 
-    move_piece(target_square, start_square)
+    @grid = grid_backup
     !is_check
   end
 
