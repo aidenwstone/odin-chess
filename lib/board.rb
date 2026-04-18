@@ -104,8 +104,8 @@ class Board # rubocop:disable Metrics/ClassLength
 
       next if piece.nil? || piece.color == color
 
-      available_attacks(square).any? do |attack_square|
-        @grid.dig(*attack_square).instance_of?(King)
+      available_attacks(square).any? do |target_square|
+        @grid.dig(*target_square).instance_of?(King)
       end
     end
   end
