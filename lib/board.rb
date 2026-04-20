@@ -124,6 +124,8 @@ class Board # rubocop:disable Metrics/ClassLength
   end
 
   def checkmate?(color)
+    return false unless check?(color)
+
     ALL_SQUARES.none? do |square|
       piece = @grid.dig(*square)
 

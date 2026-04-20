@@ -596,6 +596,18 @@ describe Board do
         expect(board.checkmate?(:white)).to be false
       end
     end
+
+    context 'when the king is in stalemate' do
+      before do
+        board.place_piece(King.new(:black), 7, 7)
+        board.place_piece(Queen.new(:white), 5, 6)
+        board.place_piece(King.new(:white), 0, 0)
+      end
+
+      it 'returns false' do
+        expect(board.checkmate?(:black)).to be false
+      end
+    end
   end
 
   describe '#threefold_repetition?' do
