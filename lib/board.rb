@@ -131,9 +131,7 @@ class Board # rubocop:disable Metrics/ClassLength
 
       next if piece.nil? || piece.color != color
 
-      available_moves(square).any? do |target_square|
-        prevents_check?(square, target_square)
-      end
+      legal_moves(square).any?
     end
   end
 
