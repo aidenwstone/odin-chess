@@ -103,11 +103,9 @@ class Board # rubocop:disable Metrics/ClassLength
   end
 
   def check?(color)
-    ALL_SQUARES.any? do |square|
-      piece = @grid.dig(*square)
+    enemy_color = color == :white ? :black : :white
 
-      next if piece.nil? || piece.color == color
-
+    player_squares(enemy_color).any? do |square|
       available_attacks(square).any? do |target_square|
         @grid.dig(*target_square).instance_of?(King)
       end
@@ -126,13 +124,7 @@ class Board # rubocop:disable Metrics/ClassLength
   def checkmate?(color)
     return false unless check?(color)
 
-    ALL_SQUARES.none? do |square|
-      piece = @grid.dig(*square)
-
-      next if piece.nil? || piece.color != color
-
-      legal_moves(square).any?
-    end
+    player_squares(color).none? { |square| legal_moves(square).any? }
   end
 
   def threefold_repetition?
@@ -252,5 +244,12 @@ class Board # rubocop:disable Metrics/ClassLength
   def square_in_direction(start_square, direction, step)
     vector = direction.map { |delta| delta * step }
     square_from_vector(start_square, vector)
+  end
+
+  def player_squares(color)
+    ALL_SQUARES.filter do |square|
+      piece = @grid.dig(*square)
+      piece && piece.color == color
+    end
   end
 end
