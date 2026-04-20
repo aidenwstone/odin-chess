@@ -610,6 +610,46 @@ describe Board do
     end
   end
 
+  describe '#stalemate?' do
+    subject(:board) { described_class.new(setup: :empty) }
+
+    context 'when the king is in stalemate' do
+      before do
+        board.place_piece(King.new(:black), 7, 7)
+        board.place_piece(Queen.new(:white), 5, 6)
+        board.place_piece(King.new(:white), 0, 0)
+      end
+
+      it 'returns true' do
+        expect(board.stalemate?(:black)).to be true
+      end
+    end
+
+    context 'when the king is not in stalemate' do
+      before do
+        board.place_piece(King.new(:black), 7, 7)
+        board.place_piece(Queen.new(:white), 5, 5)
+        board.place_piece(King.new(:white), 0, 0)
+      end
+
+      it 'returns false' do
+        expect(board.stalemate?(:black)).to be false
+      end
+    end
+
+    context 'when the king is in checkmate' do
+      before do
+        board.place_piece(King.new(:black), 7, 7)
+        board.place_piece(Queen.new(:white), 5, 7)
+        board.place_piece(King.new(:white), 6, 5)
+      end
+
+      it 'returns false' do
+        expect(board.stalemate?(:black)).to be false
+      end
+    end
+  end
+
   describe '#threefold_repetition?' do
     subject(:board) { described_class.new(setup: :empty) }
 

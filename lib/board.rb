@@ -127,6 +127,12 @@ class Board # rubocop:disable Metrics/ClassLength
     player_squares(color).none? { |square| legal_moves(square).any? }
   end
 
+  def stalemate?(color)
+    return false if check?(color)
+
+    player_squares(color).all? { |square| legal_moves(square).empty? }
+  end
+
   def threefold_repetition?
     @board_state_log.count(@grid.hash) >= 3
   end
