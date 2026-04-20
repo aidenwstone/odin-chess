@@ -18,6 +18,7 @@ class Board # rubocop:disable Metrics/ClassLength
 
   def initialize(setup: :standard)
     @grid = Array.new(8) { Array.new(8) }
+    @board_state_log = []
 
     return if setup == :empty
 
@@ -47,9 +48,11 @@ class Board # rubocop:disable Metrics/ClassLength
     piece
   end
 
-  def move_piece(start_square, target_square)
+  def move_piece(start_square, target_square, log_move: true)
     piece = remove_piece(*start_square)
     place_piece(piece, *target_square)
+    @board_state_log.push(@grid.hash) if log_move
+    piece
   end
 
   def show(perspective)
@@ -113,7 +116,7 @@ class Board # rubocop:disable Metrics/ClassLength
 
   def prevents_check?(start_square, target_square)
     grid_backup = @grid.map(&:dup)
-    piece = move_piece(start_square, target_square)
+    piece = move_piece(start_square, target_square, log_move: false)
     is_check = check?(piece.color)
 
     @grid = grid_backup
@@ -130,6 +133,10 @@ class Board # rubocop:disable Metrics/ClassLength
         prevents_check?(square, target_square)
       end
     end
+  end
+
+  def threefold_repetition?
+    @board_state_log.count(@grid.hash) >= 3
   end
 
   private

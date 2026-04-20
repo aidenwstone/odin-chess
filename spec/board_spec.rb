@@ -598,6 +598,46 @@ describe Board do
     end
   end
 
+  describe '#threefold_repetition?' do
+    subject(:board) { described_class.new(setup: :empty) }
+
+    context 'when the same positions occur three times' do
+      before do
+        board.place_piece(Piece.new(:white), 4, 5)
+        board.place_piece(Piece.new(:black), 2, 6)
+
+        3.times do
+          board.move_piece([4, 5], [4, 6])
+          board.move_piece([2, 6], [2, 7])
+          board.move_piece([4, 6], [4, 5])
+          board.move_piece([2, 7], [2, 6])
+        end
+      end
+
+      it 'returns true' do
+        expect(board.threefold_repetition?).to be true
+      end
+    end
+
+    context 'when the same positions occur only twice' do
+      before do
+        board.place_piece(Piece.new(:white), 4, 5)
+        board.place_piece(Piece.new(:black), 2, 6)
+
+        2.times do
+          board.move_piece([4, 5], [4, 6])
+          board.move_piece([2, 6], [2, 7])
+          board.move_piece([4, 6], [4, 5])
+          board.move_piece([2, 7], [2, 6])
+        end
+      end
+
+      it 'returns false' do
+        expect(board.threefold_repetition?).to be false
+      end
+    end
+  end
+
   describe '#legal_moves' do
     subject(:board) { described_class.new(setup: :empty) }
 
