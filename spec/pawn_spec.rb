@@ -75,4 +75,17 @@ describe Pawn do
       end
     end
   end
+
+  describe '#after_move' do
+    subject(:pawn) { described_class.new(:white) }
+
+    before do
+      allow(pawn).to receive(:disable_double_step) # rubocop:disable RSpec/SubjectStub
+    end
+
+    it 'calls #disable_double_step' do
+      pawn.after_move
+      expect(pawn).to have_received(:disable_double_step) # rubocop:disable RSpec/SubjectStub
+    end
+  end
 end

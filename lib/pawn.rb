@@ -34,4 +34,8 @@ class Pawn < SteppingPiece
   def attacks
     [[@direction, 1], [@direction, -1]]
   end
+
+  def after_move
+    disable_double_step
+  end
 end
