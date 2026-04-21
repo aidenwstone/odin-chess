@@ -51,7 +51,12 @@ class Board # rubocop:disable Metrics/ClassLength
   def move_piece(start_square, target_square, log_move: true)
     piece = remove_piece(*start_square)
     place_piece(piece, *target_square)
-    @board_state_log.push(@grid.hash) if log_move
+
+    if log_move
+      @board_state_log.push(@grid.hash)
+      piece.after_move
+    end
+
     piece
   end
 

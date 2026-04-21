@@ -79,6 +79,7 @@ describe Board do
 
     before do
       board.place_piece(piece, 3, 5)
+      allow(piece).to receive(:after_move)
     end
 
     it 'removes the piece from the old square' do
@@ -89,6 +90,11 @@ describe Board do
     it 'places the piece on the target square' do
       board.move_piece([3, 5], [3, 1])
       expect(board.grid.dig(3, 1)).to be(piece)
+    end
+
+    it 'calls #after_move on the piece' do
+      board.move_piece([3, 5], [3, 1])
+      expect(piece).to have_received(:after_move)
     end
 
     it 'returns the piece' do

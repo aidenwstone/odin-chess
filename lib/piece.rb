@@ -31,6 +31,8 @@ class Piece
     raise NotImplementedError, "#{self.class} must implement #attacks"
   end
 
+  def after_move; end
+
   def to_s
     raise NotImplementedError, "#{self.class} must implement #to_s"
   end
