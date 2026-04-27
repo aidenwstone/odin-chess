@@ -696,6 +696,110 @@ describe Board do
     end
   end
 
+  describe '#insufficient_material?' do
+    subject(:board) { described_class.new(setup: :empty) }
+
+    context 'with the combination King vs King' do
+      before do
+        board.place_piece(King.new(:white), 0, 0)
+        board.place_piece(King.new(:black), 7, 7)
+      end
+
+      it 'returns true' do
+        expect(board.insufficient_material?).to be true
+      end
+    end
+
+    context 'with the combination King + Bishop vs King' do
+      before do
+        board.place_piece(King.new(:white), 0, 0)
+        board.place_piece(Bishop.new(:white), 1, 0)
+        board.place_piece(King.new(:black), 7, 7)
+      end
+
+      it 'returns true' do
+        expect(board.insufficient_material?).to be true
+      end
+    end
+
+    context 'with the combination King + Knight vs King' do
+      before do
+        board.place_piece(King.new(:white), 0, 0)
+        board.place_piece(Knight.new(:white), 1, 0)
+        board.place_piece(King.new(:black), 7, 7)
+      end
+
+      it 'returns true' do
+        expect(board.insufficient_material?).to be true
+      end
+    end
+
+    context 'with the combination King + Bishop vs King + Bishop with bishops on the same color' do
+      before do
+        board.place_piece(King.new(:white), 0, 0)
+        board.place_piece(Bishop.new(:white), 1, 0)
+        board.place_piece(King.new(:black), 7, 7)
+        board.place_piece(Bishop.new(:black), 6, 7)
+      end
+
+      it 'returns true' do
+        expect(board.insufficient_material?).to be true
+      end
+    end
+
+    context 'with the combination King + Bishop vs King + Bishop with bishops on opposite colors' do
+      before do
+        board.place_piece(King.new(:white), 0, 0)
+        board.place_piece(Bishop.new(:white), 1, 0)
+        board.place_piece(King.new(:black), 7, 7)
+        board.place_piece(Bishop.new(:black), 5, 7)
+      end
+
+      it 'returns false' do
+        expect(board.insufficient_material?).to be false
+      end
+    end
+
+    context 'with the combination King + Bishop vs King + Pawn' do
+      before do
+        board.place_piece(King.new(:white), 0, 0)
+        board.place_piece(Bishop.new(:white), 1, 0)
+        board.place_piece(King.new(:black), 7, 7)
+        board.place_piece(Pawn.new(:black), 6, 7)
+      end
+
+      it 'returns false' do
+        expect(board.insufficient_material?).to be false
+      end
+    end
+
+    context 'with the combination King + Knight vs King + Pawn' do
+      before do
+        board.place_piece(King.new(:white), 0, 0)
+        board.place_piece(Knight.new(:white), 1, 0)
+        board.place_piece(King.new(:black), 7, 7)
+        board.place_piece(Pawn.new(:black), 6, 7)
+      end
+
+      it 'returns false' do
+        expect(board.insufficient_material?).to be false
+      end
+    end
+
+    context 'with the combination King + Knight + Knight vs King' do
+      before do
+        board.place_piece(King.new(:white), 0, 0)
+        board.place_piece(Knight.new(:white), 1, 0)
+        board.place_piece(Knight.new(:white), 0, 1)
+        board.place_piece(King.new(:black), 7, 7)
+      end
+
+      it 'returns false' do
+        expect(board.insufficient_material?).to be false
+      end
+    end
+  end
+
   describe '#legal_moves' do
     subject(:board) { described_class.new(setup: :empty) }
 

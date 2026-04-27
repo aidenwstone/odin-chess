@@ -13,6 +13,10 @@ class Board # rubocop:disable Metrics/ClassLength
   BACK_RANK = %i[rook knight bishop queen king bishop knight rook].freeze
   FILE_LABELS = %i[a b c d e f g h].freeze
   ALL_SQUARES = (0..7).to_a.product((0..7).to_a).freeze
+  EMPTY_SUMMARY = {
+    white: { King: 0, Queen: 0, Rook: 0, Bishop: { light: 0, dark: 0 }, Knight: 0, Pawn: 0 },
+    black: { King: 0, Queen: 0, Rook: 0, Bishop: { light: 0, dark: 0 }, Knight: 0, Pawn: 0 }
+  }.freeze
 
   attr_reader :grid
 
@@ -142,6 +146,12 @@ class Board # rubocop:disable Metrics/ClassLength
     @board_state_log.count(@grid.hash) >= 3
   end
 
+  def insufficient_material?
+    material = material_summary
+
+    !(any_heavy_piece_or_pawn?(material) || multiple_minor_pieces?(material) || bishops_on_opposite_colors?(material))
+  end
+
   private
 
   def build_piece(type, color)
@@ -262,5 +272,55 @@ class Board # rubocop:disable Metrics/ClassLength
       piece = @grid.dig(*square)
       piece && piece.color == color
     end
+  end
+
+  def material_summary # rubocop:disable Metrics/AbcSize
+    occupied_squares = ALL_SQUARES.filter { |square| @grid.dig(*square) }
+
+    occupied_squares.each_with_object(hash_deep_dup(EMPTY_SUMMARY)) do |square, summary|
+      piece = @grid.dig(*square)
+
+      class_symbol = piece.class.name.to_sym
+
+      if piece.instance_of?(Bishop)
+        summary[piece.color][class_symbol][square_color(*square)] += 1
+      else
+        summary[piece.color][class_symbol] += 1
+      end
+    end
+  end
+
+  def hash_deep_dup(hash)
+    Marshal.load(Marshal.dump(hash))
+  end
+
+  def square_color(row, column)
+    if (row.even? && column.odd?) || (row.odd? && column.even?)
+      :light
+    else
+      :dark
+    end
+  end
+
+  def any_heavy_piece_or_pawn?(material)
+    pawn_count = material.dig(:white, :Pawn) + material.dig(:black, :Pawn)
+    rook_count = material.dig(:white, :Rook) + material.dig(:black, :Rook)
+    queen_count = material.dig(:white, :Queen) + material.dig(:black, :Queen)
+
+    pawn_count.positive? || rook_count.positive? || queen_count.positive?
+  end
+
+  def multiple_minor_pieces?(material)
+    white_minor_piece_count = material.dig(:white, :Bishop).values.sum + material.dig(:white, :Knight)
+    black_minor_piece_count = material.dig(:black, :Bishop).values.sum + material.dig(:black, :Knight)
+
+    white_minor_piece_count >= 2 || black_minor_piece_count >= 2
+  end
+
+  def bishops_on_opposite_colors?(material)
+    light_square_bishop_count = material.dig(:white, :Bishop, :light) + material.dig(:black, :Bishop, :light)
+    dark_square_bishop_count = material.dig(:white, :Bishop, :dark) + material.dig(:black, :Bishop, :dark)
+
+    light_square_bishop_count >= 1 && dark_square_bishop_count >= 1
   end
 end
