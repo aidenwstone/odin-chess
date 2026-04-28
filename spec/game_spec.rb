@@ -46,13 +46,32 @@ describe Game do
       end
     end
 
-    context 'when the player chooses an invalid square, then a valid square' do
+    context 'when the player chooses a square with blocked piece, then a valid square' do
       let(:start_square) { [1, 6] }
       let(:input_invalid) { "f1\n" }
       let(:input_valid) { "g2\n" }
 
       before do
         allow(game).to receive(:ask_for_input).and_return(input_invalid, input_valid) # rubocop:disable RSpec/SubjectStub
+      end
+
+      it 'requests input twice' do
+        game.choose_start_square
+        expect(game).to have_received(:ask_for_input).twice # rubocop:disable RSpec/SubjectStub
+      end
+
+      it 'returns the valid square coordinates' do
+        expect(game.choose_start_square).to eq(start_square)
+      end
+    end
+
+    context 'when the player chooses a square with enemy piece, then a valid square' do
+      let(:start_square) { [1, 4] }
+      let(:input_enemy_square) { "e7\n" }
+      let(:input_valid) { "e2\n" }
+
+      before do
+        allow(game).to receive(:ask_for_input).and_return(input_enemy_square, input_valid) # rubocop:disable RSpec/SubjectStub
       end
 
       it 'requests input twice' do

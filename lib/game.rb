@@ -23,8 +23,9 @@ class Game
     loop do
       notation_selection = ask_for_input("#{current_player.capitalize}, please select which piece to move using chess notation (e.g. b3 or f5):") # rubocop:disable Layout/LineLength
       square = notation_to_coordinates(notation_selection)
+      piece = board.piece_on(square) unless square.nil?
 
-      return square unless square.nil? || board.legal_moves(square).empty?
+      return square unless square.nil? || board.legal_moves(square).empty? || piece.color != current_player
 
       puts 'Invalid selection, please try again.'
     end
