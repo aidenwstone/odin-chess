@@ -102,6 +102,28 @@ describe Board do
     end
   end
 
+  describe '#piece_on' do
+    subject(:board) { described_class.new(setup: :empty) }
+
+    let(:piece) { Piece.new(:white) }
+
+    context 'when an occupied square is chosen' do
+      before do
+        board.place_piece(piece, 1, 0)
+      end
+
+      it 'returns the piece' do
+        expect(board.piece_on([1, 0])).to be(piece)
+      end
+    end
+
+    context 'when an empty square is chosen' do
+      it 'returns nil' do
+        expect(board.piece_on([1, 0])).to be_nil
+      end
+    end
+  end
+
   describe '#available_moves' do
     subject(:board) { described_class.new(setup: :empty) }
 

@@ -76,6 +76,10 @@ class Board # rubocop:disable Metrics/ClassLength
     draw_file_labels(perspective)
   end
 
+  def piece_on(square)
+    @grid.dig(*square)
+  end
+
   def available_moves(start_square)
     piece = @grid.dig(*start_square)
 
@@ -221,7 +225,7 @@ class Board # rubocop:disable Metrics/ClassLength
   def sliding_attacks(piece, start_square)
     piece.attacks.each_with_object([]) do |direction, attacks|
       new_attacks = squares_along_ray(start_square, direction).filter do |square|
-        found_piece = @grid.dig(*square)
+        found_piece = piece_on(square)
         piece.enemy_of?(found_piece)
       end
 
@@ -243,7 +247,7 @@ class Board # rubocop:disable Metrics/ClassLength
   end
 
   def square_available?(square)
-    @grid.dig(*square).nil?
+    piece_on(square).nil?
   end
 
   def square_from_vector(start_square, vector)
@@ -269,16 +273,16 @@ class Board # rubocop:disable Metrics/ClassLength
 
   def player_squares(color)
     ALL_SQUARES.filter do |square|
-      piece = @grid.dig(*square)
+      piece = piece_on(square)
       piece && piece.color == color
     end
   end
 
   def material_summary # rubocop:disable Metrics/AbcSize
-    occupied_squares = ALL_SQUARES.filter { |square| @grid.dig(*square) }
+    occupied_squares = ALL_SQUARES.filter { |square| piece_on(square) }
 
     occupied_squares.each_with_object(hash_deep_dup(EMPTY_SUMMARY)) do |square, summary|
-      piece = @grid.dig(*square)
+      piece = piece_on(square)
 
       class_symbol = piece.class.name.to_sym
 
