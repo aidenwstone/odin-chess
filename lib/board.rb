@@ -81,7 +81,7 @@ class Board # rubocop:disable Metrics/ClassLength
   end
 
   def available_moves(start_square)
-    piece = @grid.dig(*start_square)
+    piece = piece_on(start_square)
 
     return if piece.nil?
 
@@ -95,7 +95,7 @@ class Board # rubocop:disable Metrics/ClassLength
   end
 
   def available_attacks(start_square)
-    piece = @grid.dig(*start_square)
+    piece = piece_on(start_square)
 
     return if piece.nil?
 
@@ -120,7 +120,7 @@ class Board # rubocop:disable Metrics/ClassLength
 
     player_squares(enemy_color).any? do |square|
       available_attacks(square).any? do |target_square|
-        @grid.dig(*target_square).instance_of?(King)
+        piece_on(target_square).instance_of?(King)
       end
     end
   end
@@ -236,7 +236,7 @@ class Board # rubocop:disable Metrics/ClassLength
   def stepping_attacks(piece, start_square)
     piece.attacks.filter_map do |vector|
       target_square = square_from_vector(start_square, vector)
-      found_piece = @grid.dig(*target_square)
+      found_piece = piece_on(target_square)
       target_square if on_board?(target_square) && piece.enemy_of?(found_piece)
     end
   end
@@ -261,7 +261,7 @@ class Board # rubocop:disable Metrics/ClassLength
 
       squares << target_square
 
-      piece = @grid.dig(*target_square)
+      piece = piece_on(target_square)
       break squares if piece
     end
   end
