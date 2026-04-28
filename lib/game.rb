@@ -1,12 +1,18 @@
 # frozen_string_literal: true
 
 require './lib/board'
+require 'colorize'
 
 # The Game class manages a game of chess, keeping track of the current player, asking for input,
 # and announcing a winner. It also handles the saving/loading of games.
 class Game
   NOTATION_FORMAT = /(?<file>[a-h])(?<rank>[1-8])/.freeze
   FILE_TO_NUM = ('a'..'h').each_with_index.to_h
+  MESSAGE_TYPE_TO_COLOR = {
+    standard: :default,
+    warning: :red,
+    announcement: :green
+  }.freeze
 
   attr_reader :board, :current_player
 
@@ -27,7 +33,7 @@ class Game
 
       return square unless square.nil? || board.legal_moves(square).empty? || piece.color != current_player
 
-      puts 'Invalid selection, please try again.'
+      show_message('Invalid selection, please try again.', type: :warning)
     end
   end
 
@@ -39,14 +45,20 @@ class Game
 
       return square if legal_moves.include?(square)
 
-      puts 'Invalid selection, please try again.'
+      show_message('Invalid selection, please try again.', type: :warning)
     end
   end
 
   private
 
+  def show_message(message, type: :standard)
+    color = MESSAGE_TYPE_TO_COLOR[type]
+
+    puts "\n#{message}".colorize(color)
+  end
+
   def ask_for_input(message)
-    puts message
+    show_message(message)
     gets.chomp
   end
 

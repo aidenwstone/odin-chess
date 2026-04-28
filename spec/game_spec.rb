@@ -25,7 +25,7 @@ describe Game do
 
   describe '#choose_start_square' do
     before do
-      allow(game).to receive(:puts) # rubocop:disable RSpec/SubjectStub
+      allow(game).to receive(:show_message) # rubocop:disable RSpec/SubjectStub
     end
 
     context 'when the player chooses a valid square' do
@@ -125,7 +125,7 @@ describe Game do
 
   describe '#choose_target_square' do
     before do
-      allow(game).to receive(:puts) # rubocop:disable RSpec/SubjectStub
+      allow(game).to receive(:show_message) # rubocop:disable RSpec/SubjectStub
     end
 
     context 'when the player chooses a valid square' do
