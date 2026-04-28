@@ -84,6 +84,25 @@ describe Game do
       end
     end
 
+    context 'when the player chooses an empty square, then a valid square' do
+      let(:start_square) { [1, 2] }
+      let(:input_empty_square) { "c3\n" }
+      let(:input_valid) { "c2\n" }
+
+      before do
+        allow(game).to receive(:ask_for_input).and_return(input_empty_square, input_valid) # rubocop:disable RSpec/SubjectStub
+      end
+
+      it 'requests input twice' do
+        game.choose_start_square
+        expect(game).to have_received(:ask_for_input).twice # rubocop:disable RSpec/SubjectStub
+      end
+
+      it 'returns the valid square coordinates' do
+        expect(game.choose_start_square).to eq(start_square)
+      end
+    end
+
     context 'when the player enters bad input once, then chooses a valid square' do
       let(:start_square) { [0, 6] }
       let(:input_bad) { "bad input\n" }
