@@ -39,7 +39,7 @@ class Game
 
   def choose_target_square(start_square)
     loop do
-      notation_selection = ask_for_input("#{current_player.capitalize}, please select which square to move to using chess notation (e.g. b3 or f5):") # rubocop:disable Layout/LineLength
+      notation_selection = ask_for_input('Now select which square to move to:')
       square = notation_to_coordinates(notation_selection)
       legal_moves = board.legal_moves(start_square)
 
