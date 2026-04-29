@@ -901,4 +901,48 @@ describe Board do
       end
     end
   end
+
+  describe 'should_promote?' do
+    subject(:board) { described_class.new(setup: :empty) }
+
+    context "with a white pawn on it's final rank" do
+      before do
+        board.place_piece(Pawn.new(:white), 7, 3)
+      end
+
+      it 'returns true' do
+        expect(board.should_promote?([7, 3])).to be true
+      end
+    end
+
+    context "with a white pawn not on it's final rank" do
+      before do
+        board.place_piece(Pawn.new(:white), 6, 3)
+      end
+
+      it 'returns false' do
+        expect(board.should_promote?([6, 3])).to be false
+      end
+    end
+
+    context "with a black pawn on it's final rank" do
+      before do
+        board.place_piece(Pawn.new(:black), 0, 5)
+      end
+
+      it 'returns true' do
+        expect(board.should_promote?([0, 5])).to be true
+      end
+    end
+
+    context "with a black pawn not on it's final rank" do
+      before do
+        board.place_piece(Pawn.new(:black), 1, 5)
+      end
+
+      it 'returns false' do
+        expect(board.should_promote?([1, 5])).to be false
+      end
+    end
+  end
 end

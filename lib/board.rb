@@ -115,6 +115,14 @@ class Board # rubocop:disable Metrics/ClassLength
     end
   end
 
+  def should_promote?(square)
+    row = square[0]
+    piece = piece_on(square)
+    return false unless piece.instance_of?(Pawn)
+
+    (piece.black? && row.zero?) || (piece.white? && row == 7)
+  end
+
   def check?(color)
     enemy_color = color == :white ? :black : :white
 
