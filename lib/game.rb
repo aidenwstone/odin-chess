@@ -21,6 +21,21 @@ class Game
     @current_player = :white
   end
 
+  def play
+    loop do
+      board.show(current_player)
+
+      start_square = choose_start_square
+      target_square = choose_target_square(start_square)
+      board.move_piece(start_square, target_square)
+
+      switch_player
+
+      result = game_result
+      break announce_result(result) if result
+    end
+  end
+
   def switch_player
     @current_player = other_player
   end
@@ -75,5 +90,31 @@ class Game
     row = match_data[:rank].to_i - 1
 
     [row, column]
+  end
+
+  def game_result
+    if board.checkmate?(current_player)
+      :checkmate
+    elsif board.stalemate?(current_player)
+      :stalemate
+    elsif board.threefold_repetition?
+      :threefold_repetition
+    elsif board.insufficient_material?
+      :insufficient_material
+    end
+  end
+
+  def result_message(result)
+    case result
+    when :checkmate then "Checkmate! The winner is #{other_player.capitalize}."
+    when :stalemate then 'Stalemate! No one wins.'
+    when :threefold_repetition then 'Threefold repetition! No one wins.'
+    when :insufficient_material then 'Insufficient mating material! No one wins.'
+    end
+  end
+
+  def announce_result(result)
+    @board.show(other_player)
+    show_message(result_message(result), type: :announcement)
   end
 end
