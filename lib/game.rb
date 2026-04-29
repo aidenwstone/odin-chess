@@ -22,7 +22,7 @@ class Game
   end
 
   def switch_player
-    @current_player = current_player == :white ? :black : :white
+    @current_player = other_player
   end
 
   def choose_start_square
@@ -50,6 +50,10 @@ class Game
   end
 
   private
+
+  def other_player
+    current_player == :white ? :black : :white
+  end
 
   def show_message(message, type: :standard)
     color = MESSAGE_TYPE_TO_COLOR[type]
