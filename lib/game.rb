@@ -13,6 +13,12 @@ class Game
     warning: :red,
     announcement: :green
   }.freeze
+  PROMOTION_PIECE_CLASSES = {
+    queen: Queen,
+    knight: Knight,
+    bishop: Bishop,
+    rook: Rook
+  }.freeze
 
   attr_reader :board, :current_player
 
@@ -59,6 +65,17 @@ class Game
       legal_moves = board.legal_moves(start_square)
 
       return square if legal_moves.include?(square)
+
+      show_message('Invalid selection, please try again.', type: :warning)
+    end
+  end
+
+  def choose_promotion_piece
+    loop do
+      piece_selection = ask_for_input("#{current_player.capitalize}, select a piece to promote your pawn to (Queen, Knight, Bishop, Rook):") # rubocop:disable Layout/LineLength
+
+      piece_class = PROMOTION_PIECE_CLASSES[piece_selection.downcase.to_sym]
+      return piece_class.new(current_player) if piece_class
 
       show_message('Invalid selection, please try again.', type: :warning)
     end

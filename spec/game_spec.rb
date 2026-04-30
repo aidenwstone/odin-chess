@@ -187,4 +187,63 @@ describe Game do
       end
     end
   end
+
+  describe '#choose_promotion_piece' do
+    before do
+      allow(game).to receive(:show_message) # rubocop:disable RSpec/SubjectStub
+    end
+
+    context 'when the player chooses a valid piece' do
+      let(:input_valid) { "queen\n" }
+
+      before do
+        allow(game).to receive(:gets).and_return(input_valid) # rubocop:disable RSpec/SubjectStub
+      end
+
+      it 'requests input once' do
+        game.choose_promotion_piece
+        expect(game).to have_received(:gets).once # rubocop:disable RSpec/SubjectStub
+      end
+
+      it 'returns the new piece object' do
+        expect(game.choose_promotion_piece).to be_instance_of(Queen)
+      end
+    end
+
+    context 'when the player chooses an invalid piece, then a valid piece' do
+      let(:input_valid) { "knight\n" }
+      let(:input_invalid) { "king\n" }
+
+      before do
+        allow(game).to receive(:gets).and_return(input_invalid, input_valid) # rubocop:disable RSpec/SubjectStub
+      end
+
+      it 'requests input twice' do
+        game.choose_promotion_piece
+        expect(game).to have_received(:gets).twice # rubocop:disable RSpec/SubjectStub
+      end
+
+      it 'returns the new piece object' do
+        expect(game.choose_promotion_piece).to be_instance_of(Knight)
+      end
+    end
+
+    context 'when the player enters bad input once, then chooses a valid piece' do
+      let(:input_valid) { "rook\n" }
+      let(:input_bad) { "test\n" }
+
+      before do
+        allow(game).to receive(:gets).and_return(input_bad, input_valid) # rubocop:disable RSpec/SubjectStub
+      end
+
+      it 'requests input twice' do
+        game.choose_promotion_piece
+        expect(game).to have_received(:gets).twice # rubocop:disable RSpec/SubjectStub
+      end
+
+      it 'returns the new piece object' do
+        expect(game.choose_promotion_piece).to be_instance_of(Rook)
+      end
+    end
+  end
 end
