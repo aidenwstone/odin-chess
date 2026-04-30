@@ -30,12 +30,7 @@ class Game # rubocop:disable Metrics/ClassLength
   def play
     loop do
       board.show(current_player)
-
-      start_square = choose_start_square
-      target_square = choose_target_square(start_square)
-      board.move_piece(start_square, target_square)
-
-      promote(target_square) if @board.should_promote?(target_square)
+      play_turn
       switch_player
 
       result = game_result
@@ -83,6 +78,13 @@ class Game # rubocop:disable Metrics/ClassLength
   end
 
   private
+
+  def play_turn
+    start_square = choose_start_square
+    target_square = choose_target_square(start_square)
+    board.move_piece(start_square, target_square)
+    promote(target_square) if @board.should_promote?(target_square)
+  end
 
   def other_player
     current_player == :white ? :black : :white
