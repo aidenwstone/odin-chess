@@ -5,7 +5,7 @@ require 'colorize'
 
 # The Game class manages a game of chess, keeping track of the current player, asking for input,
 # and announcing a winner. It also handles the saving/loading of games.
-class Game
+class Game # rubocop:disable Metrics/ClassLength
   NOTATION_FORMAT = /(?<file>[a-h])(?<rank>[1-8])/.freeze
   FILE_TO_NUM = ('a'..'h').each_with_index.to_h
   MESSAGE_TYPE_TO_COLOR = {
@@ -35,6 +35,7 @@ class Game
       target_square = choose_target_square(start_square)
       board.move_piece(start_square, target_square)
 
+      promote(target_square) if @board.should_promote?(target_square)
       switch_player
 
       result = game_result
@@ -107,6 +108,12 @@ class Game
     row = match_data[:rank].to_i - 1
 
     [row, column]
+  end
+
+  def promote(square)
+    @board.show(current_player)
+    promotion_piece = choose_promotion_piece
+    board.place_piece(promotion_piece, *square)
   end
 
   def game_result
