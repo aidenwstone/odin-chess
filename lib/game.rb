@@ -6,6 +6,7 @@ require 'colorize'
 # The Game class manages a game of chess, keeping track of the current player, asking for input,
 # and announcing a winner. It also handles the saving/loading of games.
 class Game # rubocop:disable Metrics/ClassLength
+  SAVE_PATH = 'dump/saved_game.dat'
   NOTATION_FORMAT = /(?<file>[a-h])(?<rank>[1-8])/.freeze
   FILE_TO_NUM = ('a'..'h').each_with_index.to_h
   MESSAGE_TYPE_TO_COLOR = {
@@ -42,10 +43,15 @@ class Game # rubocop:disable Metrics/ClassLength
     @current_player = other_player
   end
 
-  def choose_start_square
+  def choose_start_square # rubocop:disable Metrics/AbcSize
+    show_message('Tip: You can save the game at this point by entering "quit" instead of selecting a piece.',
+                 type: :announcement)
+
     loop do
-      notation_selection = ask_for_input("#{current_player.capitalize}, please select which piece to move using chess notation (e.g. b3 or f5):") # rubocop:disable Layout/LineLength
-      square = notation_to_coordinates(notation_selection)
+      input = ask_for_input("#{current_player.capitalize}, please select which piece to move using chess notation (e.g. b3 or f5):") # rubocop:disable Layout/LineLength
+      return if input == 'quit'
+
+      square = notation_to_coordinates(input)
       piece = board.piece_on(square) unless square.nil?
 
       return square unless square.nil? || board.legal_moves(square).empty? || piece.color != current_player
@@ -81,9 +87,18 @@ class Game # rubocop:disable Metrics/ClassLength
 
   def play_turn
     start_square = choose_start_square
+    save_and_quit unless start_square
+
     target_square = choose_target_square(start_square)
     board.move_piece(start_square, target_square)
     promote(target_square) if @board.should_promote?(target_square)
+  end
+
+  def save_and_quit
+    serialized_game = Marshal.dump(self)
+    File.binwrite(SAVE_PATH, serialized_game)
+    show_message('The game was saved!', type: :announcement)
+    exit
   end
 
   def other_player
