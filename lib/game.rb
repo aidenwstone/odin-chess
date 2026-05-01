@@ -35,7 +35,10 @@ class Game # rubocop:disable Metrics/ClassLength
       switch_player
 
       result = game_result
-      break announce_result(result) if result
+      if result
+        delete_save
+        break announce_result(result)
+      end
     end
   end
 
@@ -99,6 +102,10 @@ class Game # rubocop:disable Metrics/ClassLength
     File.binwrite(SAVE_PATH, serialized_game)
     show_message('The game was saved!', type: :announcement)
     exit
+  end
+
+  def delete_save
+    File.delete(SAVE_PATH)
   end
 
   def other_player
