@@ -70,7 +70,7 @@ class Game # rubocop:disable Metrics/ClassLength
     loop do
       piece_selection = ask_for_input("#{current_player.capitalize}, select a piece to promote your pawn to (Queen, Knight, Bishop, Rook):") # rubocop:disable Layout/LineLength
 
-      piece_class = PROMOTION_PIECE_CLASSES[piece_selection.downcase.to_sym]
+      piece_class = PROMOTION_PIECE_CLASSES[piece_selection.to_sym]
       return piece_class.new(current_player) if piece_class
 
       show_message('Invalid selection, please try again.', type: :warning)
@@ -98,7 +98,7 @@ class Game # rubocop:disable Metrics/ClassLength
 
   def ask_for_input(message)
     show_message(message)
-    gets.chomp
+    gets.chomp.downcase
   end
 
   def notation_to_coordinates(notation)
