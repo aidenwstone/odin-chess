@@ -23,6 +23,15 @@ class Game # rubocop:disable Metrics/ClassLength
 
   attr_reader :board, :current_player
 
+  def self.load_or_new
+    if File.exist?(SAVE_PATH)
+      serialized_game = File.binread(SAVE_PATH)
+      Marshal.load(serialized_game) # rubocop:disable Security/MarshalLoad
+    else
+      new
+    end
+  end
+
   def initialize
     @board = Board.new
     @current_player = :white
