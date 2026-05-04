@@ -7,6 +7,7 @@ class Piece
 
   def initialize(color)
     @color = color
+    @has_moved = false
   end
 
   def white?
@@ -15,6 +16,10 @@ class Piece
 
   def black?
     @color == :black
+  end
+
+  def moved?
+    @has_moved
   end
 
   def enemy_of?(piece)
@@ -31,7 +36,9 @@ class Piece
     raise NotImplementedError, "#{self.class} must implement #attacks"
   end
 
-  def after_move; end
+  def after_move
+    @has_moved = true
+  end
 
   def to_s
     raise NotImplementedError, "#{self.class} must implement #to_s"
