@@ -531,6 +531,110 @@ describe Board do
     end
   end
 
+  describe '#available_castling_moves' do
+    subject(:board) { described_class.new(setup: :empty) }
+
+    context 'when all castling conditions are met' do
+      let(:valid_castling_moves) { [[0, 2], [0, 6]] }
+
+      before do
+        board.place_piece(King.new(:white), 0, 4)
+        board.place_piece(Rook.new(:white), 0, 0)
+        board.place_piece(Rook.new(:white), 0, 7)
+      end
+
+      it 'returns castling moves for both sides' do
+        expect(board.available_castling_moves(:white)).to match_array(valid_castling_moves)
+      end
+    end
+
+    context 'when the king has previously moved' do
+      before do
+        board.place_piece(King.new(:white), 0, 4)
+        board.place_piece(Rook.new(:white), 0, 0)
+        board.place_piece(Rook.new(:white), 0, 7)
+
+        board.move_piece([0, 4], [1, 4])
+        board.move_piece([1, 4], [0, 4])
+      end
+
+      it 'returns an empty array' do
+        expect(board.available_castling_moves(:white)).to be_empty
+      end
+    end
+
+    context "when there is a piece between the king and queen's rook" do
+      let(:valid_castling_moves) { [[0, 6]] }
+
+      before do
+        board.place_piece(King.new(:white), 0, 4)
+        board.place_piece(Rook.new(:white), 0, 0)
+        board.place_piece(Rook.new(:white), 0, 7)
+        board.place_piece(Piece.new(:white), 0, 1)
+      end
+
+      it 'returns only the kingside castling move' do
+        expect(board.available_castling_moves(:white)).to match_array(valid_castling_moves)
+      end
+    end
+
+    context 'when the king is in check' do
+      before do
+        board.place_piece(King.new(:black), 7, 4)
+        board.place_piece(Rook.new(:black), 7, 0)
+        board.place_piece(Rook.new(:black), 7, 7)
+        board.place_piece(Bishop.new(:white), 5, 6)
+      end
+
+      it 'returns an empty array' do
+        expect(board.available_castling_moves(:black)).to be_empty
+      end
+    end
+
+    context 'when queenside castling would land the king on a square controlled by the enemy' do
+      let(:valid_castling_moves) { [[0, 6]] }
+
+      before do
+        board.place_piece(King.new(:white), 0, 4)
+        board.place_piece(Rook.new(:white), 0, 0)
+        board.place_piece(Rook.new(:white), 0, 7)
+        board.place_piece(Queen.new(:black), 5, 2)
+      end
+
+      it 'returns only the kingside castling move' do
+        expect(board.available_castling_moves(:white)).to match_array(valid_castling_moves)
+      end
+    end
+
+    context 'when kingside castling would cause the king to pass through a square controlled by the enemy' do
+      let(:valid_castling_moves) { [[7, 2]] }
+
+      before do
+        board.place_piece(King.new(:black), 7, 4)
+        board.place_piece(Rook.new(:black), 7, 0)
+        board.place_piece(Rook.new(:black), 7, 7)
+        board.place_piece(Queen.new(:white), 3, 5)
+      end
+
+      it 'returns only the queenside castling move' do
+        expect(board.available_castling_moves(:black)).to match_array(valid_castling_moves)
+      end
+    end
+
+    context "when the queen's rook is not present" do
+      let(:valid_castling_moves) { [[0, 6]] }
+
+      before do
+        board.place_piece(King.new(:white), 0, 4)
+        board.place_piece(Rook.new(:white), 0, 7)
+      end
+
+      it 'returns only the kingside castling move' do
+        expect(board.available_castling_moves(:white)).to match_array(valid_castling_moves)
+      end
+    end
+  end
+
   describe '#check?' do
     subject(:board) { described_class.new(setup: :empty) }
 

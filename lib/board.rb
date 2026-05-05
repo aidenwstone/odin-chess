@@ -13,6 +13,34 @@ class Board # rubocop:disable Metrics/ClassLength
   BACK_RANK = %i[rook knight bishop queen king bishop knight rook].freeze
   FILE_LABELS = %i[a b c d e f g h].freeze
   ALL_SQUARES = (0..7).to_a.product((0..7).to_a).freeze
+  CASTLING_SQUARES = {
+    white: {
+      king_square: [0, 4],
+      kingside: {
+        rook_square: [0, 7],
+        between_king_and_rook: [[0, 5], [0, 6]],
+        king_path: [[0, 5], [0, 6]]
+      },
+      queenside: {
+        rook_square: [0, 0],
+        between_king_and_rook: [[0, 3], [0, 2], [0, 1]],
+        king_path: [[0, 3], [0, 2]]
+      }
+    },
+    black: {
+      king_square: [7, 4],
+      kingside: {
+        rook_square: [7, 7],
+        between_king_and_rook: [[7, 5], [7, 6]],
+        king_path: [[7, 5], [7, 6]]
+      },
+      queenside: {
+        rook_square: [7, 0],
+        between_king_and_rook: [[7, 3], [7, 2], [7, 1]],
+        king_path: [[7, 3], [7, 2]]
+      }
+    }
+  }.freeze
   EMPTY_SUMMARY = {
     white: { King: 0, Queen: 0, Rook: 0, Bishop: { light: 0, dark: 0 }, Knight: 0, Pawn: 0 },
     black: { King: 0, Queen: 0, Rook: 0, Bishop: { light: 0, dark: 0 }, Knight: 0, Pawn: 0 }
@@ -103,6 +131,15 @@ class Board # rubocop:disable Metrics/ClassLength
       sliding_attacks(piece, start_square)
     elsif piece.movement_type == :stepping
       stepping_attacks(piece, start_square)
+    end
+  end
+
+  def available_castling_moves(color)
+    row = color == :white ? 0 : 7
+    moves = { kingside: [row, 6], queenside: [row, 2] }
+
+    moves.filter_map do |side, square|
+      square if can_castle?(color, side)
     end
   end
 
@@ -277,6 +314,34 @@ class Board # rubocop:disable Metrics/ClassLength
   def square_in_direction(start_square, direction, step)
     vector = direction.map { |delta| delta * step }
     square_from_vector(start_square, vector)
+  end
+
+  def can_castle?(color, side)
+    king_and_rook_unmoved?(color, side) &&
+      !check?(color) &&
+      clear_between_king_and_rook?(color, side) &&
+      castling_path_safe?(color, side)
+  end
+
+  def king_and_rook_unmoved?(color, side)
+    king_square = CASTLING_SQUARES.dig(color, :king_square)
+    rook_square = CASTLING_SQUARES.dig(color, side, :rook_square)
+    castling_pieces = [king_square, rook_square].map { |square| piece_on(square) }
+
+    true unless castling_pieces.any?(&:nil?) || castling_pieces.any?(&:moved?)
+  end
+
+  def clear_between_king_and_rook?(color, side)
+    squares_between = CASTLING_SQUARES.dig(color, side, :between_king_and_rook)
+
+    squares_between.all? { |square| square_available?(square) }
+  end
+
+  def castling_path_safe?(color, side)
+    king_square = CASTLING_SQUARES.dig(color, :king_square)
+    path_squares = CASTLING_SQUARES.dig(color, side, :king_path)
+
+    path_squares.all? { |square| prevents_check?(king_square, square) }
   end
 
   def player_squares(color)
