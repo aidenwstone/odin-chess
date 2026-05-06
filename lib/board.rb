@@ -92,6 +92,16 @@ class Board # rubocop:disable Metrics/ClassLength
     piece
   end
 
+  def castle(color, side)
+    king_start_square = CASTLING_SQUARES.dig(color, :king_square)
+    king_target_square = CASTLING_SQUARES.dig(color, side, :king_path).last
+    rook_start_square = CASTLING_SQUARES.dig(color, side, :rook_square)
+    rook_target_square = CASTLING_SQUARES.dig(color, side, :between_king_and_rook).first
+
+    move_piece(king_start_square, king_target_square, log_move: false)
+    move_piece(rook_start_square, rook_target_square)
+  end
+
   def show(perspective)
     board_view = rows_for(perspective)
 

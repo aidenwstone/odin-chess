@@ -102,6 +102,70 @@ describe Board do
     end
   end
 
+  describe '#castle' do
+    subject(:board) { described_class.new(setup: :empty) }
+
+    context 'when castling kingside' do
+      let(:white_king) { King.new(:white) }
+      let(:white_rook) { Rook.new(:white) }
+
+      before do
+        board.place_piece(white_king, 0, 4)
+        board.place_piece(white_rook, 0, 7)
+      end
+
+      it 'removes the king from the old square' do
+        board.castle(:white, :kingside)
+        expect(board.piece_on([0, 4])).to be_nil
+      end
+
+      it 'moves the king two squares to the right' do
+        board.castle(:white, :kingside)
+        expect(board.piece_on([0, 6])).to be(white_king)
+      end
+
+      it 'removes the rook from the old square' do
+        board.castle(:white, :kingside)
+        expect(board.piece_on([0, 7])).to be_nil
+      end
+
+      it 'moves the rook onto the square the king passed over' do
+        board.castle(:white, :kingside)
+        expect(board.piece_on([0, 5])).to be(white_rook)
+      end
+    end
+
+    context 'when castling queenside' do
+      let(:black_king) { King.new(:black) }
+      let(:black_rook) { Rook.new(:black) }
+
+      before do
+        board.place_piece(black_king, 7, 4)
+        board.place_piece(black_rook, 7, 0)
+      end
+
+      it 'removes the king from the old square' do
+        board.castle(:black, :queenside)
+        expect(board.piece_on([7, 4])).to be_nil
+      end
+
+      it 'moves the king two squares to the right' do
+        board.castle(:black, :queenside)
+        expect(board.piece_on([7, 2])).to be(black_king)
+      end
+
+      it 'removes the rook from the old square' do
+        board.castle(:black, :queenside)
+        expect(board.piece_on([7, 0])).to be_nil
+      end
+
+      it 'moves the rook onto the square the king passed over' do
+        board.castle(:black, :queenside)
+        expect(board.piece_on([7, 3])).to be(black_rook)
+      end
+    end
+  end
+
   describe '#piece_on' do
     subject(:board) { described_class.new(setup: :empty) }
 
