@@ -1004,6 +1004,25 @@ describe Board do
         expect(board.legal_moves([3, 2])).to match(legal_moves)
       end
     end
+
+    context 'with a king that is able to castle' do
+      let(:castling_moves) do
+        {
+          [0, 2] => :castling,
+          [0, 6] => :castling
+        }
+      end
+
+      before do
+        board.place_piece(King.new(:white), 0, 4)
+        board.place_piece(Rook.new(:white), 0, 0)
+        board.place_piece(Rook.new(:white), 0, 7)
+      end
+
+      it 'includes the castling moves' do
+        expect(board.legal_moves([0, 4])).to include(castling_moves)
+      end
+    end
   end
 
   describe 'should_promote?' do

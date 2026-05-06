@@ -144,12 +144,18 @@ class Board # rubocop:disable Metrics/ClassLength
   end
 
   def legal_moves(start_square)
+    piece = piece_on(start_square)
     moves = available_moves(start_square).to_h { |square| [square, :move] }
     attacks = available_attacks(start_square).to_h { |square| [square, :attack] }
 
-    moves.merge(attacks).filter do |target_square|
+    all_moves = moves.merge(attacks).filter do |target_square|
       prevents_check?(start_square, target_square)
     end
+
+    return all_moves unless piece.instance_of?(King)
+
+    castling_moves = available_castling_moves(piece.color).to_h { |square| [square, :castling] }
+    all_moves.merge(castling_moves)
   end
 
   def should_promote?(square)
