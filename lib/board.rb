@@ -118,6 +118,15 @@ class Board # rubocop:disable Metrics/ClassLength
     @grid.dig(*square)
   end
 
+  def castling_side(square)
+    column = square[1]
+
+    case column
+    when 6 then :kingside
+    when 2 then :queenside
+    end
+  end
+
   def available_moves(start_square)
     piece = piece_on(start_square)
 

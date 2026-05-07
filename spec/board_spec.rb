@@ -188,6 +188,26 @@ describe Board do
     end
   end
 
+  describe '#castling_side' do
+    subject(:board) { described_class.new }
+
+    context 'when given a kingside castling square' do
+      let(:kingside_square) { [0, 6] }
+
+      it 'returns :kingside' do
+        expect(board.castling_side(kingside_square)).to be(:kingside)
+      end
+    end
+
+    context 'when given a queenside castling square' do
+      let(:queenside_square) { [7, 2] }
+
+      it 'returns :queenside' do
+        expect(board.castling_side(queenside_square)).to be(:queenside)
+      end
+    end
+  end
+
   describe '#available_moves' do
     subject(:board) { described_class.new(setup: :empty) }
 
