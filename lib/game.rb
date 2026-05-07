@@ -78,7 +78,7 @@ class Game # rubocop:disable Metrics/ClassLength
       square = notation_to_coordinates(notation_selection)
       legal_moves = board.legal_moves(start_square)
 
-      return square if legal_moves.include?(square)
+      return legal_moves.assoc(square) if legal_moves.include?(square)
 
       show_message('Invalid selection, please try again.', type: :warning)
     end
@@ -101,8 +101,8 @@ class Game # rubocop:disable Metrics/ClassLength
     start_square = choose_start_square
     save_and_quit unless start_square
 
-    target_square = choose_target_square(start_square)
-    board.move_piece(start_square, target_square)
+    target_square, movement_type = *choose_target_square(start_square)
+    make_move(start_square, target_square, movement_type)
     promote(target_square) if @board.should_promote?(target_square)
   end
 
@@ -141,6 +141,15 @@ class Game # rubocop:disable Metrics/ClassLength
     row = match_data[:rank].to_i - 1
 
     [row, column]
+  end
+
+  def make_move(start_square, target_square, movement_type)
+    if movement_type == :castling
+      side = board.castling_side(target_square)
+      board.castle(current_player, side)
+    else
+      board.move_piece(start_square, target_square)
+    end
   end
 
   def promote(square)

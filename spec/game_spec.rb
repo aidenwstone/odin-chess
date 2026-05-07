@@ -131,6 +131,7 @@ describe Game do
     context 'when the player chooses a valid square' do
       let(:start_square) { [1, 3] }
       let(:target_square) { [3, 3] }
+      let(:movement_type) { :move }
       let(:input_valid) { "d4\n" }
 
       before do
@@ -142,14 +143,15 @@ describe Game do
         expect(game).to have_received(:ask_for_input).once # rubocop:disable RSpec/SubjectStub
       end
 
-      it 'returns the valid square coordinates' do
-        expect(game.choose_target_square(start_square)).to eq(target_square)
+      it 'returns an array containing the valid square coordinates along with the movement type' do
+        expect(game.choose_target_square(start_square)).to eq([target_square, movement_type])
       end
     end
 
     context 'when the player chooses an invalid square, then a valid square' do
       let(:start_square) { [1, 5] }
       let(:target_square) { [3, 5] }
+      let(:movement_type) { :move }
       let(:input_invalid) { "e4\n" }
       let(:input_valid) { "f4\n" }
 
@@ -162,14 +164,15 @@ describe Game do
         expect(game).to have_received(:ask_for_input).twice # rubocop:disable RSpec/SubjectStub
       end
 
-      it 'returns the valid square coordinates' do
-        expect(game.choose_target_square(start_square)).to eq(target_square)
+      it 'returns an array containing the valid square coordinates along with the movement type' do
+        expect(game.choose_target_square(start_square)).to eq([target_square, movement_type])
       end
     end
 
     context 'when the player enters bad input once, then chooses a valid square' do
       let(:start_square) { [0, 1] }
       let(:target_square) { [2, 2] }
+      let(:movement_type) { :move }
       let(:input_bad) { "bad input\n" }
       let(:input_valid) { "c3\n" }
 
@@ -182,8 +185,8 @@ describe Game do
         expect(game).to have_received(:ask_for_input).twice # rubocop:disable RSpec/SubjectStub
       end
 
-      it 'returns the valid square coordinates' do
-        expect(game.choose_target_square(start_square)).to eq(target_square)
+      it 'returns an array containing the valid square coordinates along with the movement type' do
+        expect(game.choose_target_square(start_square)).to eq([target_square, movement_type])
       end
     end
   end
