@@ -150,12 +150,14 @@ class Board # rubocop:disable Metrics/ClassLength
 
     return {} if piece.nil?
 
+    en_passant_attack = @en_passant_attacks[start_square]
     attacks = case piece.movement_type
               when :sliding then sliding_attacks(piece, start_square)
               when :stepping then stepping_attacks(piece, start_square)
-              end
+              end.to_h { |square| [square, :attack] }
 
-    attacks.to_h { |square| [square, :attack] }
+    attacks[en_passant_attack] = :en_passant if en_passant_attack
+    attacks
   end
 
   def available_castling_moves(color)

@@ -707,6 +707,19 @@ describe Board do
       end
     end
 
+    context 'when a pawn has an available en passant attack' do
+      before do
+        board.place_piece(Pawn.new(:white), 4, 4)
+        board.place_piece(Pawn.new(:black), 6, 5)
+
+        board.move_piece([6, 5], [4, 5])
+      end
+
+      it 'includes the en_passant attack' do
+        expect(board.available_attacks([4, 4])).to include([5, 5] => :en_passant)
+      end
+    end
+
     context 'when no piece exist on the square' do
       it 'returns an empty hash' do
         expect(board.available_attacks([4, 5])).to be_empty
