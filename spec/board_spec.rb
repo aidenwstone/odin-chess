@@ -408,7 +408,7 @@ describe Board do
       end
     end
 
-    context "when a pawn on it's first move has clear squares" do
+    context 'when a pawn on its first move has clear squares' do
       let(:valid_moves) do
         {
           [2, 1] => :move,
@@ -425,7 +425,7 @@ describe Board do
       end
     end
 
-    context "when a pawn on it's first move has blocked squares" do
+    context 'when a pawn on its first move has blocked squares' do
       before do
         board.place_piece(Pawn.new(:white), 1, 1)
         board.place_piece(Piece.new(:black), 2, 1)
@@ -1192,7 +1192,7 @@ describe Board do
   describe 'should_promote?' do
     subject(:board) { described_class.new(setup: :empty) }
 
-    context "with a white pawn on it's final rank" do
+    context 'with a white pawn on its final rank' do
       before do
         board.place_piece(Pawn.new(:white), 7, 3)
       end
@@ -1202,7 +1202,7 @@ describe Board do
       end
     end
 
-    context "with a white pawn not on it's final rank" do
+    context 'with a white pawn not on its final rank' do
       before do
         board.place_piece(Pawn.new(:white), 6, 3)
       end
@@ -1212,7 +1212,7 @@ describe Board do
       end
     end
 
-    context "with a black pawn on it's final rank" do
+    context 'with a black pawn on its final rank' do
       before do
         board.place_piece(Pawn.new(:black), 0, 5)
       end
@@ -1222,7 +1222,7 @@ describe Board do
       end
     end
 
-    context "with a black pawn not on it's final rank" do
+    context 'with a black pawn not on its final rank' do
       before do
         board.place_piece(Pawn.new(:black), 1, 5)
       end
