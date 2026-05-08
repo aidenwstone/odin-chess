@@ -130,27 +130,30 @@ class Board # rubocop:disable Metrics/ClassLength
   def available_moves(start_square)
     piece = piece_on(start_square)
 
-    return if piece.nil?
+    return {} if piece.nil?
 
-    if piece.instance_of?(Pawn)
-      pawn_movements(piece, start_square)
-    elsif piece.movement_type == :sliding
-      sliding_movements(piece, start_square)
-    elsif piece.movement_type == :stepping
-      stepping_movements(piece, start_square)
-    end
+    movements = if piece.instance_of?(Pawn)
+                  pawn_movements(piece, start_square)
+                elsif piece.movement_type == :sliding
+                  sliding_movements(piece, start_square)
+                elsif piece.movement_type == :stepping
+                  stepping_movements(piece, start_square)
+                end
+
+    movements.to_h { |square| [square, :move] }
   end
 
   def available_attacks(start_square)
     piece = piece_on(start_square)
 
-    return if piece.nil?
+    return {} if piece.nil?
 
-    if piece.movement_type == :sliding
-      sliding_attacks(piece, start_square)
-    elsif piece.movement_type == :stepping
-      stepping_attacks(piece, start_square)
-    end
+    attacks = case piece.movement_type
+              when :sliding then sliding_attacks(piece, start_square)
+              when :stepping then stepping_attacks(piece, start_square)
+              end
+
+    attacks.to_h { |square| [square, :attack] }
   end
 
   def available_castling_moves(color)
@@ -158,14 +161,14 @@ class Board # rubocop:disable Metrics/ClassLength
     moves = { kingside: [row, 6], queenside: [row, 2] }
 
     moves.filter_map do |side, square|
-      square if can_castle?(color, side)
-    end
+      [square, :castling] if can_castle?(color, side)
+    end.to_h
   end
 
   def legal_moves(start_square)
     piece = piece_on(start_square)
-    moves = available_moves(start_square).to_h { |square| [square, :move] }
-    attacks = available_attacks(start_square).to_h { |square| [square, :attack] }
+    moves = available_moves(start_square)
+    attacks = available_attacks(start_square)
 
     all_moves = moves.merge(attacks).filter do |target_square|
       prevents_check?(start_square, target_square)
@@ -173,7 +176,7 @@ class Board # rubocop:disable Metrics/ClassLength
 
     return all_moves unless piece.instance_of?(King)
 
-    castling_moves = available_castling_moves(piece.color).to_h { |square| [square, :castling] }
+    castling_moves = available_castling_moves(piece.color)
     all_moves.merge(castling_moves)
   end
 
@@ -189,7 +192,7 @@ class Board # rubocop:disable Metrics/ClassLength
     enemy_color = color == :white ? :black : :white
 
     player_squares(enemy_color).any? do |square|
-      available_attacks(square).any? do |target_square|
+      available_attacks(square).any? do |target_square, _movement_type|
         piece_on(target_square).instance_of?(King)
       end
     end
