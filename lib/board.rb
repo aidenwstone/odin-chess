@@ -104,6 +104,13 @@ class Board # rubocop:disable Metrics/ClassLength
     move_piece(rook_start_square, rook_target_square)
   end
 
+  def en_passant(start_square, target_square)
+    enemy_square = [start_square[0], target_square[1]]
+
+    remove_piece(*enemy_square)
+    move_piece(start_square, target_square)
+  end
+
   def show(perspective)
     board_view = rows_for(perspective)
 

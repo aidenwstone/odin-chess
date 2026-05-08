@@ -206,6 +206,61 @@ describe Board do
     end
   end
 
+  describe '#en_passant' do
+    subject(:board) { described_class.new(setup: :empty) }
+
+    let(:white_pawn) { Pawn.new(:white) }
+    let(:black_pawn) { Pawn.new(:black) }
+
+    context 'when capturing en passant with a white pawn' do
+      before do
+        board.place_piece(white_pawn, 4, 4)
+        board.place_piece(black_pawn, 6, 3)
+
+        board.move_piece([6, 3], [4, 3])
+      end
+
+      it 'removes the enemy pawn from its square' do
+        board.en_passant([4, 4], [5, 3])
+        expect(board.piece_on([4, 3])).to be_nil
+      end
+
+      it 'removes the capturing pawn from the old square' do
+        board.en_passant([4, 4], [5, 3])
+        expect(board.piece_on([4, 4])).to be_nil
+      end
+
+      it 'moves the capturing pawn to the square the enemy passed over' do
+        board.en_passant([4, 4], [5, 3])
+        expect(board.piece_on([5, 3])).to be(white_pawn)
+      end
+    end
+
+    context 'when capturing en passant with a black pawn' do
+      before do
+        board.place_piece(black_pawn, 3, 4)
+        board.place_piece(white_pawn, 1, 3)
+
+        board.move_piece([1, 3], [3, 3])
+      end
+
+      it 'removes the enemy pawn from its square' do
+        board.en_passant([3, 4], [2, 3])
+        expect(board.piece_on([4, 3])).to be_nil
+      end
+
+      it 'removes the capturing pawn from the old square' do
+        board.en_passant([3, 4], [2, 3])
+        expect(board.piece_on([3, 4])).to be_nil
+      end
+
+      it 'moves the capturing pawn to the square the enemy passed over' do
+        board.en_passant([3, 4], [2, 3])
+        expect(board.piece_on([2, 3])).to be(black_pawn)
+      end
+    end
+  end
+
   describe '#piece_on' do
     subject(:board) { described_class.new(setup: :empty) }
 

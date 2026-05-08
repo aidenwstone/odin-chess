@@ -144,9 +144,12 @@ class Game # rubocop:disable Metrics/ClassLength
   end
 
   def make_move(start_square, target_square, movement_type)
-    if movement_type == :castling
+    case movement_type
+    when :castling
       side = board.castling_side(target_square)
       board.castle(current_player, side)
+    when :en_passant
+      board.en_passant(start_square, target_square)
     else
       board.move_piece(start_square, target_square)
     end
