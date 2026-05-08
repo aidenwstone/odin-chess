@@ -5,7 +5,7 @@ require './lib/stepping_piece'
 # The Pawn subclass manages a Pawn chess piece.
 # It implements the abstract methods from the Piece superclass.
 class Pawn < SteppingPiece
-  def initialize(is_white)
+  def initialize(color)
     super
     @first_move = true
     @direction = white? ? 1 : -1
