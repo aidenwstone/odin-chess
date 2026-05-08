@@ -100,6 +100,46 @@ describe Board do
     it 'returns the piece' do
       expect(board.move_piece([3, 5], [3, 1])).to be(piece)
     end
+
+    context 'with a non-pawn piece' do
+      before do
+        allow(board).to receive(:activate_en_passant) # rubocop:disable RSpec/SubjectStub
+      end
+
+      it 'does not call #activate_en_passant' do
+        board.move_piece([3, 5], [3, 1])
+        expect(board).not_to have_received(:activate_en_passant) # rubocop:disable RSpec/SubjectStub
+      end
+    end
+
+    context 'with a pawn piece on its first move' do
+      let(:pawn) { Pawn.new(:white) }
+
+      before do
+        board.place_piece(pawn, 1, 3)
+        allow(board).to receive(:activate_en_passant) # rubocop:disable RSpec/SubjectStub
+      end
+
+      it 'calls #activate_en_passant' do
+        board.move_piece([1, 3], [3, 3])
+        expect(board).to have_received(:activate_en_passant) # rubocop:disable RSpec/SubjectStub
+      end
+    end
+
+    context 'with a pawn piece on a subsequent move' do
+      let(:pawn) { Pawn.new(:white) }
+
+      before do
+        board.place_piece(pawn, 2, 3)
+        pawn.disable_double_step
+        allow(board).to receive(:activate_en_passant) # rubocop:disable RSpec/SubjectStub
+      end
+
+      it 'does not call #activate_en_passant' do
+        board.move_piece([2, 3], [3, 3])
+        expect(board).not_to have_received(:activate_en_passant) # rubocop:disable RSpec/SubjectStub
+      end
+    end
   end
 
   describe '#castle' do

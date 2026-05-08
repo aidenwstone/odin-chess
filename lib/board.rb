@@ -48,9 +48,10 @@ class Board # rubocop:disable Metrics/ClassLength
 
   attr_reader :grid
 
-  def initialize(setup: :standard)
+  def initialize(setup: :standard) # rubocop:disable Metrics/AbcSize
     @grid = Array.new(8) { Array.new(8) }
     @board_state_log = []
+    @en_passant_attacks = {}
 
     return if setup == :empty
 
@@ -86,6 +87,7 @@ class Board # rubocop:disable Metrics/ClassLength
 
     if log_move
       @board_state_log.push(@grid.hash)
+      activate_en_passant(piece, start_square, target_square) if piece.instance_of?(Pawn) && piece.first_move?
       piece.after_move
     end
 
@@ -370,6 +372,16 @@ class Board # rubocop:disable Metrics/ClassLength
     path_squares = CASTLING_SQUARES.dig(color, side, :king_path)
 
     path_squares.all? { |square| prevents_check?(king_square, square) }
+  end
+
+  def activate_en_passant(pawn, start_square, target_square)
+    skipped_square = square_in_direction(start_square, pawn.moves.first, 1)
+
+    [[0, -1], [0, 1]].each do |direction|
+      square = square_in_direction(target_square, direction, 1)
+      piece = piece_on(square)
+      @en_passant_attacks[square] = skipped_square if piece.instance_of?(Pawn)
+    end
   end
 
   def player_squares(color)
