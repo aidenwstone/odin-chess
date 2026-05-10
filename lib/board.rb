@@ -86,6 +86,7 @@ class Board # rubocop:disable Metrics/ClassLength
     place_piece(piece, *target_square)
 
     if log_move
+      @en_passant_attacks.clear
       @board_state_log.push(@grid.hash)
       activate_en_passant(piece, start_square, target_square) if piece.instance_of?(Pawn) && piece.first_move?
       piece.after_move
