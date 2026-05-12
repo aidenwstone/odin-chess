@@ -2,6 +2,7 @@
 
 require './lib/board'
 require 'colorize'
+require 'FileUtils'
 
 # The Game class manages a game of chess, keeping track of the current player, asking for input,
 # and announcing a winner. It also handles the saving/loading of games.
@@ -114,7 +115,7 @@ class Game # rubocop:disable Metrics/ClassLength
   end
 
   def delete_save
-    File.delete(SAVE_PATH)
+    FileUtils.rm_f(SAVE_PATH)
   end
 
   def other_player
